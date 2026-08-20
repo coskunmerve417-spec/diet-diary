@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#4B6455">
+<title>Diyet Günlüğü</title>
+<style>
+:root{--ink:#223027;--muted:#6B7A70;--bg:#F1F4EC;--card:#FFF;--border:#E1E7DA;--sage:#4B6455;--sl:#E7EEE4;--tur:#C98A3E;--tl:#F6E9D6;--blue:#6E93A6;--bl:#E5EEF1;--r:16px;--shadow:0 1px 2px #2230270a,0 6px 20px #2230270f}
+*{box-sizing:border-box}html,body{margin:0;padding:0}body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;padding-bottom:50px}h1,h2{margin:0;font-family:Georgia,serif}input,textarea,button{font:inherit}#app{max-width:640px;margin:auto}
+.topbar{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--bg) 80%,#f1f4ec00);padding:calc(14px + env(safe-area-inset-top)) 16px 8px}.topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:10px}.navbtn{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:#fff;color:var(--sage);font-size:25px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}.date-block{position:relative;flex:1;text-align:center}.date-display{display:flex;flex-direction:column;line-height:1.1;pointer-events:none}.weekday{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--tur);font-weight:600}.datenum{font-family:Georgia,serif;font-size:22px;font-weight:600}#datePicker{position:absolute;inset:0;width:100%;height:100%;opacity:0}.quickstats{display:flex;justify-content:center;gap:14px;margin-top:8px;font-size:13px;color:var(--muted)}.qs-item .num{color:var(--ink);font-weight:600}#saveIndicator{font-size:11px;color:var(--sage);opacity:0}.show{opacity:1!important}
+main{padding:6px 16px 20px;display:flex;flex-direction:column;gap:14px}.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 18px 20px;box-shadow:var(--shadow)}.card h2{font-size:17px;margin-bottom:14px}.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted);font-weight:500}input,textarea{border:1px solid var(--border);border-radius:10px;padding:9px 10px;font-size:15px;color:var(--ink);background:#fbfcfa;width:100%}textarea{resize:vertical;min-height:56px}.sleep-total{margin-top:12px;font-size:13px;color:var(--muted)}.num{font-variant-numeric:tabular-nums}
+.meal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.meal-head h2{margin:0}.time-input{width:100px!important}.item-row{display:grid;grid-template-columns:1fr 58px 64px 28px;gap:8px;align-items:center;margin-bottom:8px}.item-row input{padding:8px 9px;font-size:14px}.remove-item{width:26px;height:26px;border-radius:50%;border:0;background:var(--sl);color:var(--sage);font-size:16px}.add-item{margin-top:2px;border:1px dashed var(--border);background:transparent;color:var(--sage);border-radius:10px;padding:8px;width:100%;font-size:13px;font-weight:600}.meal-subtotal{display:flex;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px dashed var(--border);font-size:13px;color:var(--muted)}.meal-subtotal .num{font-size:16px;color:var(--tur);font-weight:600}.habit-check,.checklist li{display:flex;align-items:center;gap:9px;font-size:13px;margin-top:10px}.checkbox{width:20px;height:20px;border-radius:6px;border:1.6px solid var(--border);display:flex;align-items:center;justify-content:center;background:#fbfcfa;flex:0 0 auto}.checkbox.checked{background:var(--sage);border-color:var(--sage);color:#fff}.checklist{list-style:none;margin:0;padding:0}.checklist li{font-size:14px;margin:0 0 11px}.extra-row{padding:10px 0;border-bottom:1px solid var(--border)}.extra-head{display:flex;gap:10px;align-items:center;font-size:14px}.extra-fields{display:grid;grid-template-columns:1fr 100px;gap:8px;padding:8px 0 0 30px}.extra-fields input{font-size:13px;padding:7px 9px}
+.jar-wrap{display:flex;gap:20px;align-items:center}.jar{position:relative;width:64px;height:96px;border:2.5px solid var(--blue);border-top:0;border-radius:0 0 18px 18px;overflow:hidden;background:#fff}.jar-liquid{position:absolute;left:0;right:0;bottom:0;height:0;background:var(--blue);transition:.4s}.glasses{flex:1;display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.glass-btn{aspect-ratio:1;border-radius:50%;border:1.6px solid var(--blue);background:var(--bl);color:var(--blue);font-size:12px;font-weight:600}.glass-btn.filled{background:var(--blue);color:#fff}.water-total{text-align:center;margin-top:14px;font-size:13px;color:var(--muted)}.water-total .num{color:var(--blue);font-weight:600}
+.sport-grid{display:grid;grid-template-columns:110px 1fr;gap:10px;margin-bottom:12px}.summary-card{background:var(--sage);border-color:var(--sage);color:#fff}.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;font-size:13px}.summary-grid div{display:flex;justify-content:space-between;border-bottom:1px solid #ffffff2e;padding-bottom:6px}.summary-total{margin-top:14px;padding-top:12px;border-top:1px solid #ffffff47;display:flex;justify-content:space-between}.summary-total .num{font-family:Georgia,serif;font-size:26px;color:var(--tl)}.stars-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:13px;color:var(--muted)}.stars{display:flex;gap:4px}.star{font-size:20px;color:#dce3d6}.star.on{color:var(--tur)}.notes-field{margin-top:12px}footer{text-align:center;padding:20px 24px 6px;font-size:12px;color:var(--muted);line-height:1.5}footer b{color:var(--sage)}
+
+.food-help{font-size:12px;color:var(--muted);margin:-6px 0 12px;line-height:1.45}
+.food-found{border-color:#9fb8a7!important;background:#f6faf5!important}
+.food-kcal-auto{background:#f4f7f1!important}
+.custom-food-grid{display:grid;grid-template-columns:1fr 110px;gap:8px}
+.custom-food-grid button{grid-column:1/-1;border:0;background:var(--sage);color:#fff;border-radius:10px;padding:10px;font-weight:600}
+.custom-food-list{margin-top:10px;font-size:12px;color:var(--muted)}
+.custom-food-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:5px 8px;margin:3px 4px 0 0;background:#fbfcfa}
+.custom-food-pill button{border:0;background:transparent;color:var(--muted);padding:0;font-size:14px}
+
+@media(max-width:380px){.row2{grid-template-columns:1fr}.item-row{grid-template-columns:1fr 46px 52px 26px}}
+</style>
+</head>
+<body><div id="app">
+<header class="topbar"><div class="topbar-inner"><button class="navbtn" id="prevDay">‹</button><div class="date-block"><input type="date" id="datePicker"><div class="date-display"><span class="weekday" id="weekdayLabel">—</span><span class="datenum" id="dateLabel">—</span></div></div><button class="navbtn" id="nextDay">›</button></div><div class="quickstats"><div class="qs-item">🔥 <span class="num" id="qsCalories">0</span> kcal</div><div class="qs-item">💧 <span class="num" id="qsWater">0</span> L</div><span id="saveIndicator">Kaydedildi</span></div></header>
+<main>
+<section class="card"><h2>⚖️ Güne Başlarken</h2><div class="row2"><label>Kilo (kg)<input type="number" step=".1" id="weight"></label><label>Su hedefi (L)<input type="number" step=".5" id="waterGoal"></label></div><div class="row2" style="margin-top:10px"><label>Yattığım saat<input type="time" id="sleepStart"></label><label>Kalktığım saat<input type="time" id="sleepEnd"></label></div><div class="sleep-total">🌙 Toplam uyku: <span class="num" id="sleepTotal">—</span></div></section>
+<div id="mealCards"></div>
+<section class="card"><h2>💊 Takviye Takibi</h2><ul class="checklist" id="supplementsList"></ul></section>
+<section class="card"><h2>🥛 Günlük Ekler</h2><div id="extrasList"></div></section>
+
+<section class="card"><h2>🍽️ Besin Kalori Kütüphanesi</h2>
+<div class="food-help">Besin adını öğünlerde yazıp listeden seç. Gramı girince kcal otomatik hesaplanır. Değerler yaklaşık kcal/100 g'dır; marka ve tarife göre değişebilir.</div>
+<div class="custom-food-grid">
+<input id="customFoodName" placeholder="Kendi besinin (örn. ev köftesi)">
+<input id="customFoodKcal" type="number" placeholder="kcal / 100 g">
+<button id="addCustomFood">+ Kendi besinimi kaydet</button>
+</div>
+<div class="custom-food-list" id="customFoodList"></div>
+<datalist id="foodList"></datalist>
+</section>
+
+<section class="card"><h2>💧 Su Takibi</h2><div class="jar-wrap"><div class="jar"><div class="jar-liquid" id="jarLiquid"></div></div><div class="glasses" id="glasses"></div></div><div class="water-total">Toplam: <span class="num" id="waterTotalLabel">0</span> L / <span id="waterGoalLabel">3.5</span> L</div></section>
+<section class="card"><h2>🏃‍♀️ Spor</h2><div class="sport-grid"><label>Süre (dk)<input type="number" id="sportDuration"></label><label>Egzersiz<input type="text" id="sportExercise" placeholder="ör. tempolu yürüyüş"></label></div><div class="habit-check" id="sportCompleted"><span class="checkbox" id="sportCompletedBox"></span><span>En az 45 dakika tamamlandı</span></div></section>
+<section class="card summary-card"><h2>📊 Gün Sonu</h2><div class="summary-grid" id="summaryGrid"></div><div class="summary-total"><span>🔢 TOPLAM</span><span class="num" id="summaryTotal">0 kcal</span></div></section>
+<section class="card"><h2>📝 Bugünün Notu</h2><div class="stars-row"><span>Açlık</span><div class="stars" data-key="hunger"></div></div><div class="stars-row"><span>Tokluk</span><div class="stars" data-key="fullness"></div></div><div class="stars-row"><span>Enerji</span><div class="stars" data-key="energy"></div></div><label class="notes-field">İştah / canımın çektiği şeyler<textarea id="appetite"></textarea></label><label class="notes-field">Bugün dikkatimi çeken şey<textarea id="highlight"></textarea></label></section>
+</main><footer>Veriler bu iPhone/iPad ve bu tarayıcıya özel kaydedilir. Besin kcal değerleri yaklaşık değerlerdir.<br><b>Safari → Paylaş → Ana Ekrana Ekle</b></footer></div>
+<script>
+"use strict";
+const MEALS=[
+{key:"breakfast",title:"Kahvaltı",icon:"🍳",habit:"Peynir + kekik + çörek otu",rows:3},
+{key:"lunch",title:"Öğle",icon:"🥗",habit:null,rows:3},
+{key:"dinner",title:"Akşam",icon:"🍲",habit:"Çorbaya zerdeçal",rows:3},
+{key:"snack",title:"Ara Öğün / Acıkma",icon:"🍎",habit:null,rows:2}];
+const SUPPLEMENTS=[
+{key:"morningBerberin",label:"Sabah — Berberin"},
+{key:"appleVinegar",label:"Elma sirkesi + su"},
+{key:"ala",label:"ALA"},
+{key:"eveningBerberin",label:"Akşam — Berberin"},
+{key:"insulex",label:"Yemekten 40–50 dk sonra — Insulex"}];
+const EXTRAS=[
+{key:"kefir",label:"Kefir",unit:"ml",brand:true},
+{key:"mineralWater",label:"Maden suyu",unit:"ml",brand:true},
+{key:"pumpkinSeed",label:"Kabak çekirdeği",unit:"g / 2 avuç",brand:false}];
+const FOOD_DB_BASE={"Haşlanmış yumurta":155,"Yumurta":143,"Sahanda yumurta":196,"Omlet sade":154,"Menemen":95,"Menemen peynirli":125,"Yumurta beyazı":52,"Yumurta sarısı":322,"Beyaz peynir":264,"Tam yağlı beyaz peynir":290,"Az yağlı beyaz peynir":180,"Kaşar peyniri":404,"Taze kaşar":350,"Eski kaşar":430,"Lor peyniri":90,"Çökelek":105,"Labne":225,"Krem peynir":240,"Mozzarella":280,"Parmesan":431,"Süzme yoğurt":120,"Yoğurt tam yağlı":61,"Yoğurt yarım yağlı":50,"Yoğurt light":43,"Kefir":60,"Süt tam yağlı":61,"Süt yarım yağlı":47,"Süt light":35,"Ayran":35,"Cacık":55,"Beyaz ekmek":265,"Tam buğday ekmeği":247,"Çavdar ekmeği":259,"Kepekli ekmek":250,"Tost ekmeği":270,"Lavaş":290,"Bazlama":280,"Pide ekmeği":275,"Simit":330,"Yulaf ezmesi":389,"Granola":450,"Mısır gevreği":357,"Pirinç pilavı":130,"Şehriyeli pirinç pilavı":155,"Bulgur pilavı":120,"Makarna haşlanmış":157,"Tam buğday makarna":149,"Erişte":160,"Kuskus pişmiş":112,"Kinoa pişmiş":120,"Izgara tavuk göğsü":165,"Tavuk göğsü haşlanmış":165,"Tavuk göğsü çiğ":120,"Tavuk but ızgara":209,"Tavuk kanat":250,"Tavuk sote":145,"Köri soslu tavuk":170,"Fırında tavuk":190,"Tavuk şiş":180,"Tavuk döner":215,"Hindi göğüs":135,"Hindi füme":110,"Dana eti yağsız pişmiş":200,"Dana biftek ızgara":250,"Dana bonfile":230,"Et sote":190,"Sac kavurma":250,"Dana kavurma":290,"Et döner":240,"Köfte ızgara":240,"İnegöl köfte":260,"Kasap köfte":250,"Adana kebap":260,"Urfa kebap":250,"Kuzu şiş":270,"Kuzu pirzola":300,"Kuzu eti":294,"Sucuk":450,"Pastırma":250,"Somon ızgara":208,"Levrek ızgara":124,"Çipura ızgara":145,"Palamut ızgara":190,"Hamsi ızgara":160,"Hamsi tava":260,"Sardalya ızgara":208,"Uskumru ızgara":230,"Ton balığı suda":116,"Ton balığı yağda":198,"Alabalık ızgara":168,"Mezgit ızgara":120,"Mezgit tava":210,"Karides haşlanmış":99,"Kalamar ızgara":120,"Mercimek haşlanmış":116,"Yeşil mercimek yemeği":115,"Kırmızı mercimek yemeği":105,"Nohut haşlanmış":164,"Nohut yemeği":150,"Kuru fasulye haşlanmış":127,"Kuru fasulye yemeği":145,"Barbunya pilaki":135,"Bezelye yemeği":90,"Humus":166,"Mercimek çorbası":70,"Ezogelin çorbası":65,"Tarhana çorbası":60,"Yayla çorbası":65,"Tavuk suyu çorbası":55,"Domates çorbası":55,"Sebze çorbası":45,"Mantar çorbası":70,"İşkembe çorbası":90,"Kelle paça çorbası":120,"Zeytinyağlı taze fasulye":90,"Karnıyarık":170,"İmam bayıldı":145,"Musakka":155,"Türlü":80,"Sebzeli türlü":80,"Bamya yemeği":75,"Pırasa yemeği":80,"Ispanak yemeği":75,"Kabak yemeği":65,"Patlıcan yemeği":85,"Kapuska":70,"Kısır":170,"Mercimek köftesi":160,"Çiğ köfte etsiz":180,"Dolma biber":135,"Yaprak sarma zeytinyağlı":170,"Mantı":220,"Lahmacun":230,"Pide kıymalı":260,"Pide kaşarlı":285,"Gözleme peynirli":250,"Gözleme patatesli":230,"Domates":18,"Salatalık":15,"Marul":15,"Roka":25,"Maydanoz":36,"Biber yeşil":20,"Kırmızı biber":31,"Havuç":41,"Brokoli":34,"Karnabahar":25,"Kabak":17,"Patlıcan":25,"Ispanak":23,"Mantar":22,"Soğan":40,"Sarımsak":149,"Patates haşlanmış":87,"Patates fırında":120,"Patates kızartması":312,"Tatlı patates":86,"Mısır haşlanmış":96,"Avokado":160,"Elma":52,"Muz":89,"Portakal":47,"Mandalina":53,"Armut":57,"Şeftali":39,"Nektarin":44,"Kayısı":48,"Erik":46,"Kiraz":63,"Vişne":50,"Çilek":32,"Karpuz":30,"Kavun":34,"Üzüm":69,"Nar":83,"Kivi":61,"Ananas":50,"Mango":60,"Yaban mersini":57,"Ahududu":52,"Böğürtlen":43,"Kuru kayısı":241,"Kuru üzüm":299,"Hurma":282,"İncir":74,"Kuru incir":249,"Badem":579,"Fındık":628,"Ceviz":654,"Antep fıstığı":562,"Kaju":553,"Yer fıstığı":567,"Ay çekirdeği":584,"Kabak çekirdeği":559,"Chia tohumu":486,"Keten tohumu":534,"Susam":573,"Tahin":595,"Fıstık ezmesi":588,"Zeytinyağı":884,"Tereyağı":717,"Mayonez":680,"Ketçap":112,"Hardal":66,"Bal":304,"Pekmez":290,"Reçel":260,"Bitter çikolata":598,"Sütlü çikolata":535,"Dondurma":207,"Sütlaç":130,"Kazandibi":150,"Muhallebi":120,"Baklava":430,"Künefe":360,"Revani":300,"Lokum":350,"Met helvası":470,"Bisküvi":450,"Kraker":430,"Patlamış mısır yağsız":387,"Türk kahvesi şekersiz":2,"Filtre kahve şekersiz":2,"Espresso":9,"Cappuccino":45,"Latte":55,"Çay şekersiz":1,"Portakal suyu":45,"Elma suyu":46,"Kola":42,"Kola şekersiz":0,"Maden suyu":0};
+
+function normFood(s){return String(s||"").trim().toLocaleLowerCase("tr-TR").replace(/\s+/g," ")}
+function customFoods(){try{return JSON.parse(localStorage.getItem("diet-custom-foods")||"{}")}catch(e){return{}}}
+function fullFoodDB(){
+  let db={};
+  Object.entries(FOOD_DB_BASE).forEach(([n,k])=>db[normFood(n)]={name:n,kcal:k});
+  Object.entries(customFoods()).forEach(([n,k])=>db[normFood(n)]={name:n,kcal:Number(k)});
+  return db
+}
+function foodMatch(name){return fullFoodDB()[normFood(name)]||null}
+function calcFoodKcal(name,grams){
+  let f=foodMatch(name),g=parseFloat(grams);
+  if(!f||!Number.isFinite(g)||g<0)return null;
+  return Math.round(f.kcal*g/100)
+}
+function renderFoodDatalist(){
+  let dl=document.getElementById("foodList"); if(!dl)return;
+  dl.innerHTML="";
+  Object.values(fullFoodDB()).sort((a,b)=>a.name.localeCompare(b.name,"tr")).forEach(f=>{
+    let o=document.createElement("option");o.value=f.name;o.label=f.kcal+" kcal / 100 g";dl.appendChild(o)
+  });
+  renderCustomFoodList()
+}
+function renderCustomFoodList(){
+  let box=document.getElementById("customFoodList"); if(!box)return;
+  let cf=customFoods(), ents=Object.entries(cf);
+  box.innerHTML=ents.length?"Kaydettiklerin: ":"";
+  ents.forEach(([n,k])=>{
+    let p=document.createElement("span");p.className="custom-food-pill";
+    p.innerHTML=`${esc(n)} · ${esc(k)} kcal/100 g <button aria-label="sil">×</button>`;
+    p.querySelector("button").onclick=()=>{let x=customFoods();delete x[n];localStorage.setItem("diet-custom-foods",JSON.stringify(x));renderFoodDatalist()};
+    box.appendChild(p)
+  })
+}
+function addCustomFoodNow(){
+  let n=(customFoodName.value||"").trim(),k=parseFloat(customFoodKcal.value);
+  if(!n||!Number.isFinite(k)||k<0){alert("Besin adı ve kcal / 100 g değerini gir.");return}
+  let x=customFoods();x[n]=k;localStorage.setItem("diet-custom-foods",JSON.stringify(x));
+  customFoodName.value="";customFoodKcal.value="";renderFoodDatalist()
+}
+
+let currentDate=new Date(),data,saveTimer;
+
+function keyDate(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function dateText(d){return String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+d.getFullYear()}
+function emptyMeal(n){return{time:"",habit:false,items:Array.from({length:n},()=>({name:"",grams:"",kcal:""}))}}
+function defaults(){let meals={},supplements={},extras={};MEALS.forEach(m=>meals[m.key]=emptyMeal(m.rows));SUPPLEMENTS.forEach(s=>supplements[s.key]=false);EXTRAS.forEach(e=>extras[e.key]={checked:false,brand:"",amount:""});return{weight:"",sleep:{bedtime:"",wake:""},waterGoal:3.5,meals,supplements,extras,water:0,sport:{duration:"",exercise:"",completed:false},notes:{hunger:0,fullness:0,energy:0,appetite:"",highlight:""}}}
+function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;")}
+function loadDay(d){currentDate=d;try{data=JSON.parse(localStorage.getItem("diet-entry-"+keyDate(d)))||defaults()}catch(e){data=defaults()}normalize();render()}
+function normalize(){let f=defaults();data=Object.assign(f,data);MEALS.forEach(m=>{if(!data.meals[m.key])data.meals[m.key]=emptyMeal(m.rows);if(!Array.isArray(data.meals[m.key].items))data.meals[m.key].items=emptyMeal(m.rows).items});SUPPLEMENTS.forEach(s=>{if(typeof data.supplements[s.key]!=="boolean")data.supplements[s.key]=false});EXTRAS.forEach(e=>{if(!data.extras[e.key])data.extras[e.key]={checked:false,brand:"",amount:""}});if(!data.sleep||typeof data.sleep!=="object")data.sleep={bedtime:"",wake:""};if(!data.sport)data.sport={duration:"",exercise:"",completed:false};if(!data.notes)data.notes={hunger:0,fullness:0,energy:0,appetite:"",highlight:""}}
+function save(){clearTimeout(saveTimer);let el=document.getElementById("saveIndicator");el.textContent="Kaydediliyor…";el.classList.add("show");saveTimer=setTimeout(()=>{try{localStorage.setItem("diet-entry-"+keyDate(currentDate),JSON.stringify(data));el.textContent="Kaydedildi"}catch(e){el.textContent="Kaydedilemedi"}setTimeout(()=>el.classList.remove("show"),1000)},250)}
+function sleepHours(){if(!data.sleep.bedtime||!data.sleep.wake)return null;let [a,b]=data.sleep.bedtime.split(":").map(Number),[c,e]=data.sleep.wake.split(":").map(Number),x=c*60+e-(a*60+b);if(x<=0)x+=1440;return Math.round(x/6)/10}
+function mealTotal(k){return data.meals[k].items.reduce((s,i)=>s+(parseFloat(i.kcal)||0),0)}
+function renderHeader(){weekdayLabel.textContent=currentDate.toLocaleDateString("tr-TR",{weekday:"long"});dateLabel.textContent=dateText(currentDate);datePicker.value=keyDate(currentDate)}
+function buildMeals(){let w=document.getElementById("mealCards");w.innerHTML="";MEALS.forEach(m=>{let c=document.createElement("section");c.className="card";c.id="card-"+m.key;c.innerHTML=`<div class="meal-head"><h2>${m.icon} ${m.title}</h2><input class="time-input" type="time" id="time-${m.key}"></div><div id="items-${m.key}"></div><button class="add-item">+ Besin ekle</button>${m.habit?`<div class="habit-check" id="habit-${m.key}"><span class="checkbox" id="habitbox-${m.key}"></span><span>${m.habit}</span></div>`:""}<div class="meal-subtotal"><span>${m.title} toplamı</span><span class="num" id="subtotal-${m.key}">0 kcal</span></div>`;w.appendChild(c);c.querySelector(".add-item").onclick=()=>{data.meals[m.key].items.push({name:"",grams:"",kcal:""});renderItems(m.key);save()};c.querySelector(".time-input").oninput=e=>{data.meals[m.key].time=e.target.value;save()};if(m.habit)c.querySelector(".habit-check").onclick=()=>{data.meals[m.key].habit=!data.meals[m.key].habit;renderItems(m.key);save()}})}
+function renderItems(k){
+  let box=document.getElementById("items-"+k),items=data.meals[k].items;box.innerHTML="";
+  items.forEach((it,i)=>{
+    let r=document.createElement("div");r.className="item-row";
+    r.innerHTML=`<input class="food-name" list="foodList" placeholder="besin" value="${esc(it.name)}"><input class="food-grams" type="number" placeholder="g" value="${esc(it.grams)}"><input class="food-kcal" type="number" placeholder="kcal" value="${esc(it.kcal)}"><button class="remove-item">×</button>`;
+    let ins=r.querySelectorAll("input"),nameIn=ins[0],gramsIn=ins[1],kcalIn=ins[2];
+    function autoCalc(){
+      let f=foodMatch(it.name),v=calcFoodKcal(it.name,it.grams);
+      nameIn.classList.toggle("food-found",!!f);
+      if(v!==null){it.kcal=String(v);kcalIn.value=v;kcalIn.classList.add("food-kcal-auto")}
+      else{kcalIn.classList.remove("food-kcal-auto")}
+      updateSummary();save()
+    }
+    nameIn.oninput=e=>{it.name=e.target.value;autoCalc()};
+    nameIn.onchange=e=>{it.name=e.target.value;autoCalc()};
+    gramsIn.oninput=e=>{it.grams=e.target.value;autoCalc()};
+    kcalIn.oninput=e=>{it.kcal=e.target.value;kcalIn.classList.remove("food-kcal-auto");updateSummary();save()};
+    if(foodMatch(it.name))nameIn.classList.add("food-found");
+    r.querySelector("button").onclick=()=>{if(items.length>1)items.splice(i,1);else Object.assign(it,{name:"",grams:"",kcal:""});renderItems(k);updateSummary();save()};
+    box.appendChild(r)
+  });
+  document.getElementById("subtotal-"+k).textContent=mealTotal(k)+" kcal";
+  let m=MEALS.find(x=>x.key===k);if(m.habit){let b=document.getElementById("habitbox-"+k);b.className="checkbox"+(data.meals[k].habit?" checked":"");b.textContent=data.meals[k].habit?"✓":""}
+}
+function renderSupp(){supplementsList.innerHTML="";SUPPLEMENTS.forEach(s=>{let li=document.createElement("li");let c=data.supplements[s.key];li.innerHTML=`<span class="checkbox${c?" checked":""}">${c?"✓":""}</span><span>${s.label}</span>`;li.onclick=()=>{data.supplements[s.key]=!c;renderSupp();save()};supplementsList.appendChild(li)})}
+function renderExtras(){extrasList.innerHTML="";EXTRAS.forEach(e=>{let x=data.extras[e.key],r=document.createElement("div");r.className="extra-row";r.innerHTML=`<div class="extra-head"><span class="checkbox${x.checked?" checked":""}">${x.checked?"✓":""}</span><span>${e.label}</span></div><div class="extra-fields">${e.brand?`<input placeholder="Marka" value="${esc(x.brand)}">`:""}<input placeholder="Miktar (${e.unit})" value="${esc(x.amount)}"></div>`;r.querySelector(".extra-head").onclick=()=>{x.checked=!x.checked;renderExtras();save()};let ins=r.querySelectorAll("input");if(e.brand){ins[0].oninput=v=>{x.brand=v.target.value;save()};ins[1].oninput=v=>{x.amount=v.target.value;save()}}else ins[0].oninput=v=>{x.amount=v.target.value;save()};extrasList.appendChild(r)})}
+function renderWater(){glasses.innerHTML="";for(let i=1;i<=12;i++){let b=document.createElement("button");b.className="glass-btn"+(i<=data.water?" filled":"");b.textContent=i;b.onclick=()=>{data.water=data.water===i?i-1:i;renderWater();updateStats();save()};glasses.appendChild(b)}let g=parseFloat(data.waterGoal)||3.5,l=Math.round(data.water*g/12*10)/10;waterTotalLabel.textContent=l;waterGoalLabel.textContent=g;jarLiquid.style.height=data.water/12*100+"%"}
+function renderSport(){sportDuration.value=data.sport.duration;sportExercise.value=data.sport.exercise;sportCompletedBox.className="checkbox"+(data.sport.completed?" checked":"");sportCompletedBox.textContent=data.sport.completed?"✓":""}
+function renderStars(){["hunger","fullness","energy"].forEach(k=>{let h=document.querySelector('.stars[data-key="'+k+'"]');h.innerHTML="";for(let i=1;i<=5;i++){let s=document.createElement("span");s.className="star"+(i<=data.notes[k]?" on":"");s.textContent="★";s.onclick=()=>{data.notes[k]=data.notes[k]===i?i-1:i;renderStars();save()};h.appendChild(s)}});appetite.value=data.notes.appetite;highlight.value=data.notes.highlight}
+function updateStats(){let total=MEALS.reduce((s,m)=>s+mealTotal(m.key),0),g=parseFloat(data.waterGoal)||3.5;qsCalories.textContent=total;qsWater.textContent=Math.round(data.water*g/12*10)/10}
+function updateSummary(){summaryGrid.innerHTML="";let t=0;MEALS.forEach(m=>{let x=mealTotal(m.key);t+=x;let d=document.createElement("div");d.innerHTML=`<span>${m.title}</span><span class="num">${x} kcal</span>`;summaryGrid.appendChild(d)});summaryTotal.textContent=t+" kcal";updateStats()}
+function render(){renderHeader();weight.value=data.weight;waterGoal.value=data.waterGoal;sleepStart.value=data.sleep.bedtime;sleepEnd.value=data.sleep.wake;sleepTotal.textContent=(sleepHours()??"—")+(sleepHours()===null?"":" saat");MEALS.forEach(m=>{document.getElementById("time-"+m.key).value=data.meals[m.key].time;renderItems(m.key)});renderSupp();renderExtras();renderWater();renderSport();renderStars();updateSummary()}
+weight.oninput=e=>{data.weight=e.target.value;save()};waterGoal.oninput=e=>{data.waterGoal=e.target.value;renderWater();updateStats();save()};sleepStart.oninput=e=>{data.sleep.bedtime=e.target.value;render();save()};sleepEnd.oninput=e=>{data.sleep.wake=e.target.value;render();save()};sportDuration.oninput=e=>{data.sport.duration=e.target.value;save()};sportExercise.oninput=e=>{data.sport.exercise=e.target.value;save()};sportCompleted.onclick=()=>{data.sport.completed=!data.sport.completed;renderSport();save()};appetite.oninput=e=>{data.notes.appetite=e.target.value;save()};highlight.oninput=e=>{data.notes.highlight=e.target.value;save()};
+prevDay.onclick=()=>{let d=new Date(currentDate);d.setDate(d.getDate()-1);loadDay(d)};nextDay.onclick=()=>{let d=new Date(currentDate);d.setDate(d.getDate()+1);loadDay(d)};datePicker.onchange=e=>{let [y,m,d]=e.target.value.split("-").map(Number);loadDay(new Date(y,m-1,d))};
+addCustomFood.onclick=addCustomFoodNow;renderFoodDatalist();buildMeals();loadDay(currentDate);
+</script></body></html>
