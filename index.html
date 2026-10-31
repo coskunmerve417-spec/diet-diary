@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<meta content="#F7F7F1" name="theme-color"/>
+<title>İyiYaşa · Diyet Günlüğü</title>
+<style>
+:root{--ink:#223027;--muted:#6B7A70;--bg:#F1F4EC;--card:#FFF;--border:#E1E7DA;--sage:#4B6455;--sl:#E7EEE4;--tur:#C98A3E;--tl:#F6E9D6;--blue:#6E93A6;--bl:#E5EEF1;--r:16px;--shadow:0 1px 2px #2230270a,0 6px 20px #2230270f}
+*{box-sizing:border-box}html,body{margin:0;padding:0}body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;padding-bottom:50px}h1,h2{margin:0;font-family:Georgia,serif}input,textarea,button{font:inherit}#app{max-width:640px;margin:auto}
+.topbar{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--bg) 80%,#f1f4ec00);padding:calc(14px + env(safe-area-inset-top)) 16px 8px}.topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:10px}.navbtn{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:#fff;color:var(--sage);font-size:25px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}.date-block{position:relative;flex:1;text-align:center}.date-display{display:flex;flex-direction:column;line-height:1.1;pointer-events:none}.weekday{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--tur);font-weight:600}.datenum{font-family:Georgia,serif;font-size:22px;font-weight:600}#datePicker{position:absolute;inset:0;width:100%;height:100%;opacity:0}.quickstats{display:flex;justify-content:center;gap:14px;margin-top:8px;font-size:13px;color:var(--muted)}.qs-item .num{color:var(--ink);font-weight:600}#saveIndicator{font-size:11px;color:var(--sage);opacity:0}.show{opacity:1!important}
+main{padding:6px 16px 20px;display:flex;flex-direction:column;gap:14px}.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 18px 20px;box-shadow:var(--shadow)}.card h2{font-size:17px;margin-bottom:14px}.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted);font-weight:500}input,textarea{border:1px solid var(--border);border-radius:10px;padding:9px 10px;font-size:15px;color:var(--ink);background:#fbfcfa;width:100%}textarea{resize:vertical;min-height:56px}.sleep-total{margin-top:12px;font-size:13px;color:var(--muted)}.num{font-variant-numeric:tabular-nums}
+.meal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.meal-head h2{margin:0}.time-input{width:100px!important}.item-row{display:grid;grid-template-columns:1fr 58px 64px 28px;gap:8px;align-items:center;margin-bottom:8px}.item-row input{padding:8px 9px;font-size:14px}.remove-item{width:26px;height:26px;border-radius:50%;border:0;background:var(--sl);color:var(--sage);font-size:16px}.add-item{margin-top:2px;border:1px dashed var(--border);background:transparent;color:var(--sage);border-radius:10px;padding:8px;width:100%;font-size:13px;font-weight:600}.meal-subtotal{display:flex;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px dashed var(--border);font-size:13px;color:var(--muted)}.meal-subtotal .num{font-size:16px;color:var(--tur);font-weight:600}.habit-check,.checklist li{display:flex;align-items:center;gap:9px;font-size:13px;margin-top:10px}.checkbox{width:20px;height:20px;border-radius:6px;border:1.6px solid var(--border);display:flex;align-items:center;justify-content:center;background:#fbfcfa;flex:0 0 auto}.checkbox.checked{background:var(--sage);border-color:var(--sage);color:#fff}.checklist{list-style:none;margin:0;padding:0}.checklist li{font-size:14px;margin:0 0 11px}.extra-row{padding:10px 0;border-bottom:1px solid var(--border)}.extra-head{display:flex;gap:10px;align-items:center;font-size:14px}.extra-fields{display:grid;grid-template-columns:1fr 100px;gap:8px;padding:8px 0 0 30px}.extra-fields input{font-size:13px;padding:7px 9px}
+.jar-wrap{display:flex;gap:20px;align-items:center}.jar{position:relative;width:64px;height:96px;border:2.5px solid var(--blue);border-top:0;border-radius:0 0 18px 18px;overflow:hidden;background:#fff}.jar-liquid{position:absolute;left:0;right:0;bottom:0;height:0;background:var(--blue);transition:.4s}.glasses{flex:1;display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.glass-btn{aspect-ratio:1;border-radius:50%;border:1.6px solid var(--blue);background:var(--bl);color:var(--blue);font-size:12px;font-weight:600}.glass-btn.filled{background:var(--blue);color:#fff}.water-total{text-align:center;margin-top:14px;font-size:13px;color:var(--muted)}.water-total .num{color:var(--blue);font-weight:600}
+.sport-grid{display:grid;grid-template-columns:110px 1fr;gap:10px;margin-bottom:12px}.summary-card{background:var(--sage);border-color:var(--sage);color:#fff}.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;font-size:13px}.summary-grid div{display:flex;justify-content:space-between;border-bottom:1px solid #ffffff2e;padding-bottom:6px}.summary-total{margin-top:14px;padding-top:12px;border-top:1px solid #ffffff47;display:flex;justify-content:space-between}.summary-total .num{font-family:Georgia,serif;font-size:26px;color:var(--tl)}.stars-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:13px;color:var(--muted)}.stars{display:flex;gap:4px}.star{font-size:20px;color:#dce3d6}.star.on{color:var(--tur)}.notes-field{margin-top:12px}footer{text-align:center;padding:20px 24px 6px;font-size:12px;color:var(--muted);line-height:1.5}footer b{color:var(--sage)}
+
+.food-help{font-size:12px;color:var(--muted);margin:-6px 0 12px;line-height:1.45}
+.food-found{border-color:#9fb8a7!important;background:#f6faf5!important}
+.food-kcal-auto{background:#f4f7f1!important}
+.custom-food-grid{display:grid;grid-template-columns:1fr 110px;gap:8px}
+.custom-food-grid button{grid-column:1/-1;border:0;background:var(--sage);color:#fff;border-radius:10px;padding:10px;font-weight:600}
+.custom-food-list{margin-top:10px;font-size:12px;color:var(--muted)}
+.custom-food-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:5px 8px;margin:3px 4px 0 0;background:#fbfcfa}
+.custom-food-pill button{border:0;background:transparent;color:var(--muted);padding:0;font-size:14px}
+
+
+.sport-types{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.sport-type-btn,.sport-time-btn,.sport-intensity-btn{border:1px solid var(--border);background:#fbfcfa;color:var(--ink);border-radius:999px;padding:7px 10px;font-size:12px;font-weight:600}
+.sport-type-btn.active,.sport-time-btn.active,.sport-intensity-btn.active{background:var(--sage);border-color:var(--sage);color:#fff}
+.sport-actions{display:flex;gap:8px;margin:10px 0 0}
+.sport-actions button{flex:1;border-radius:10px;padding:10px;font-weight:700}
+.sport-add{border:0;background:var(--sage);color:#fff}
+.sport-clear{border:1px solid var(--border);background:#fff;color:var(--muted)}
+.sport-entry{border:1px solid var(--border);border-radius:14px;padding:12px;margin-top:10px;background:#fbfcfa}
+.sport-entry-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.sport-entry-title{font-weight:700;font-size:14px}
+.sport-entry-remove{width:28px;height:28px;border:0;border-radius:50%;background:var(--sl);color:var(--sage);font-size:17px}
+.sport-entry-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sport-entry-grid label{font-size:11px}
+.sport-entry-note{grid-column:1/-1}
+.sport-quick-label{font-size:11px;color:var(--muted);margin:10px 0 6px}
+.sport-time-pills,.sport-intensity-pills{display:flex;flex-wrap:wrap;gap:6px}
+.sport-summary-box{margin-top:12px;padding:11px 12px;border-radius:12px;background:var(--sl);display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}
+.sport-summary-box b{display:block;color:var(--sage);font-size:16px;margin-top:2px}
+.sport-progress{height:8px;background:#dfe6da;border-radius:999px;overflow:hidden;margin-top:10px}
+.sport-progress>span{display:block;height:100%;background:var(--sage);width:0;transition:.25s}
+.sport-goal-text{font-size:11px;color:var(--muted);margin-top:5px}
+@media(max-width:380px){.sport-entry-grid{grid-template-columns:1fr}}
+
+@media(max-width:380px){.row2{grid-template-columns:1fr}.item-row{grid-template-columns:1fr 46px 52px 26px}}
+/* Yapay zekâ fotoğraf analizi */
+.ai-help{margin:-4px 0 14px;color:var(--muted);font-size:12px;line-height:1.55}
+.ai-input-actions{display:flex;gap:8px;flex-wrap:wrap}
+.ai-file-button{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:1;min-width:125px;background:var(--sl);color:var(--sage);border:1px solid #cbd9cb;border-radius:11px;padding:12px 8px;font-weight:700;font-size:13px;cursor:pointer}
+.ai-photo-input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.ai-preview{margin-top:12px;max-height:235px;width:100%;object-fit:contain;border-radius:12px;background:#edf1e9;border:1px solid var(--border)}
+.ai-two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.ai-context{margin-top:12px}
+.ai-analyze,.ai-add{width:100%;background:var(--sage);color:#fff;border:0;border-radius:11px;padding:12px;font-size:14px;font-weight:700;margin-top:12px}
+.ai-analyze:disabled,.ai-add:disabled{opacity:.55;cursor:not-allowed}
+.ai-status{font-size:12px;line-height:1.5;margin-top:9px;color:var(--muted)}
+.ai-status.error{color:#a83d34}
+.ai-config{margin-top:13px;padding:11px;border-radius:12px;background:#f8faf6;border:1px solid var(--border)}
+.ai-config summary{cursor:pointer;color:var(--sage);font-size:12px;font-weight:700}
+.ai-config-fields{display:grid;gap:9px;margin-top:12px}
+.ai-config-fields input{font-size:13px}
+.ai-result{margin-top:14px;border-top:1px solid var(--border);padding-top:13px}
+.ai-result h3{font:600 16px Georgia,serif;margin:0 0 6px}
+.ai-result-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.ai-result-row{border:1px solid var(--border);border-radius:12px;padding:11px;margin-top:9px;background:#fafcf9}
+.ai-result-head{display:flex;flex-direction:row;gap:8px;align-items:center;margin-bottom:8px}
+.ai-result-head input{width:18px;height:18px;accent-color:var(--sage)}
+.ai-result-head b{font-size:13px;line-height:1.3}
+.ai-result-fields{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(60px,.7fr) minmax(60px,.7fr);gap:7px}
+.ai-result-fields label{font-size:11px}
+.ai-result-fields input{font-size:13px;padding:8px 7px;min-width:0}
+.ai-macros{font-size:11px;color:var(--muted);margin-top:8px}
+.ai-result-total{margin-top:13px;padding:12px;border-radius:10px;background:var(--sl);display:flex;justify-content:space-between;font-size:13px}
+.ai-result-total strong{color:var(--sage);font-size:17px}
+.ai-disclaimer{font-size:11px;color:var(--muted);line-height:1.5;margin:10px 0 0}
+@media(max-width:380px){.ai-two{grid-template-columns:1fr}.ai-input-actions{flex-direction:column}}
+
+/* Natural Wellness / Apple Minimal · UI/UX Pro Max aligned redesign */
+:root{
+ --ink:#26372d; --muted:#65746a; --bg:#F7F7F1; --card:#FFFFFF;
+ --border:#E6EBE3; --sage:#355E49; --sl:#EBF2E8; --tur:#BF8861;
+ --tl:#F6E9DA; --blue:#638EA0; --bl:#EBF2F5; --r:22px;
+ --shadow:0 2px 4px rgba(36,58,44,.025),0 10px 30px rgba(36,58,44,.035);
+ --focus:#487E65; --violet:#827CA4; --peach:#F9EDE4;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-size:16px;line-height:1.5;background:var(--bg);padding-bottom:calc(110px + env(safe-area-inset-bottom));min-width:320px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;touch-action:manipulation}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,.ai-file-button:focus-within{outline:3px solid var(--focus);outline-offset:3px}
+button:disabled{opacity:.5;cursor:not-allowed}
+[hidden]{display:none!important}
+h1,h2,h3{letter-spacing:-.035em}
+h1,h2{font-family:Georgia,serif}
+h1{font-size:clamp(30px,7.1vw,39px);line-height:1.17;font-weight:600}
+h2{font-weight:600}
+#app{max-width:680px;margin:0 auto}
+.topbar{padding:calc(12px + env(safe-area-inset-top)) 20px 15px;background:rgba(247,247,241,.93);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(230,235,227,.76);}
+.brandline{display:flex;align-items:center;gap:8px;min-height:31px;margin-bottom:13px}
+.brand-symbol{width:27px;height:27px;border-radius:9px;background:var(--sage);color:#fff;display:grid;place-items:center}
+.brand-name{font-family:Georgia,serif;font-weight:700;letter-spacing:-.05em;font-size:21px;line-height:1;color:var(--sage)}
+.brand-name span{color:var(--tur)}
+.header-caption{font-size:9px;color:var(--muted);letter-spacing:.17em;margin-left:auto;font-weight:750}
+.topbar-inner{gap:18px}
+.navbtn{width:44px;height:44px;min-width:44px;border:1px solid var(--border);border-radius:15px;font-size:25px;font-weight:300;color:var(--sage);box-shadow:none}
+.date-display{gap:2px}.weekday{font-size:10px;letter-spacing:.17em;color:var(--sage)}.datenum{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:17px;font-weight:750;letter-spacing:-.02em}
+.quickstats{gap:13px;margin-top:10px;font-size:12px}.qs-item{display:flex;align-items:center;gap:5px}.quick-dot{width:7px;height:7px;border-radius:50%;display:inline-block}.quick-dot.sage{background:var(--sage)}.quick-dot.sky{background:var(--blue)}
+#saveIndicator{font-size:11px}
+main{padding:22px 18px 24px;display:block}
+.screen{display:none;flex-direction:column;gap:18px;min-width:0}.screen.active{display:flex}
+.screen-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px 0}.screen-heading h1{margin:4px 0 5px}.screen-heading h1 em{font-style:normal;color:var(--sage)}.screen-heading p{margin:0;color:var(--muted);font-size:13px}.eyebrow{display:block;color:#8A775D;font-size:10px;letter-spacing:.16em;font-weight:800}.heading-ornament{width:64px;height:64px;border-radius:23px;background:#E9F0E7;color:#6B9979;display:grid;place-items:center;transform:rotate(-12deg);flex-shrink:0}.heading-period{color:var(--tur)}.screen-heading.compact{margin-bottom:3px}
+.hero-card{border:0;border-radius:26px;padding:22px;background:linear-gradient(138deg,#294D3D 0%,#41674F 80%,#477454 100%);color:#fff;box-shadow:0 15px 36px rgba(39,83,55,.13);overflow:hidden;position:relative}
+.hero-card:after{content:"";width:200px;height:200px;position:absolute;right:-117px;top:-107px;border-radius:50%;border:50px solid rgba(255,255,255,.035);pointer-events:none}
+.hero-top{display:flex;justify-content:space-between;align-items:center;gap:8px}.hero-eyebrow{font-size:10px;font-weight:800;letter-spacing:.16em;color:#C5D9C8}.hero-date{font-size:11px;color:#E2ECDD;opacity:.9}
+.hero-body{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:19px 0 19px}.hero-copy{min-width:0}.hero-label{font-size:14px;color:#DFEADD}.hero-number{display:flex;align-items:baseline;gap:6px;margin:1px 0}.hero-number>span{font-size:clamp(40px,12vw,55px);font-weight:780;letter-spacing:-.06em;line-height:1.15;font-variant-numeric:tabular-nums}.hero-number small{font-size:15px;opacity:.85;font-weight:500}.hero-copy p{margin:6px 0 0;color:#D9E7D7;font-size:11px;max-width:180px;line-height:1.45}
+.calorie-orbit{position:relative;width:120px;height:120px;flex:0 0 120px;border-radius:100%;display:grid;place-items:center;background:conic-gradient(#9CBBA7 0 100%);transition:opacity .2s}.ring-inner{position:relative;z-index:1;border-radius:100%;height:97px;width:97px;background:#365D49;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#E7F1E5}.ring-inner>span{font-size:10px;font-weight:650;text-align:center;line-height:1.25}
+.hero-divider{height:1px;background:rgba(255,255,255,.15);margin:0 0 13px}.hero-macros{display:grid;grid-template-columns:1fr 1fr;gap:7px 12px}.hero-macros>div{display:flex;align-items:center;gap:6px;font-size:11px;color:#D9E8D8}.hero-macros b{color:white;margin-left:auto;font-size:11px;font-variant-numeric:tabular-nums}.stat-bullet{width:7px;height:7px;border-radius:50%;flex:none}.stat-bullet.breakfast{background:#E5C8A1}.stat-bullet.lunch{background:#A7CFAE}.stat-bullet.dinner{background:#D59D78}.stat-bullet.snack{background:#A2B8CE}
+.mini-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.mini-stat{padding:15px 10px;background:var(--card);border:1px solid var(--border);border-radius:19px;display:flex;align-items:flex-start;flex-direction:column;min-width:0}.mini-icon{width:31px;height:31px;border-radius:11px;display:grid;place-items:center;margin-bottom:10px}.mini-icon.blue{background:#EAF3F6;color:#608D9D}.mini-icon.peach{background:#FCF0E7;color:#BB865C}.mini-icon.lavender{background:#F0EEF8;color:#7E7B9F}.mini-stat span{font-size:11px;color:var(--muted)}.mini-stat strong{font-size:21px;letter-spacing:-.045em;font-weight:800;line-height:1.2;color:var(--ink);font-variant-numeric:tabular-nums}.mini-stat small{color:var(--muted);font-size:10px;margin-top:3px;line-height:1.35}
+.feature-cta{border:1px solid #D4E4D5;background:#EBF4E9;color:var(--sage);padding:15px 13px;border-radius:21px;min-height:84px;display:flex;align-items:center;gap:12px;text-align:left;width:100%}.feature-illustration{position:relative;display:grid;place-items:center;width:51px;height:51px;flex:0 0 51px;background:#D9E9D9;border-radius:16px}.feature-sparkle{position:absolute;top:-6px;right:-5px;background:#F7EFDA;border-radius:50%;height:22px;width:22px;display:grid;place-items:center;color:#A6794D}.feature-copy{flex:1;display:flex;flex-direction:column;gap:3px}.feature-copy strong{font-size:14px;font-weight:800}.feature-copy small{font-size:11px;color:#587363;line-height:1.45}
+.section-heading{display:flex;align-items:center;justify-content:space-between;margin:2px 1px -4px}.section-heading h2{font-size:23px;line-height:1.2;margin:3px 0 0}
+.card{border-radius:22px;padding:20px 18px;box-shadow:var(--shadow)}.card h2{font-family:Georgia,serif;font-size:20px;margin:0 0 14px;letter-spacing:-.035em}
+input,textarea,select{font-size:16px;min-height:44px;border:1px solid #DCE4DA;border-radius:12px;padding:10px 12px;background:#FBFCFA;color:var(--ink);max-width:100%}
+textarea{min-height:88px}label{font-size:12px;gap:6px;color:#596B61;font-weight:650;line-height:1.4}
+.row2{gap:10px}.row2+.row2{margin-top:14px!important}.sleep-total{margin-top:16px;border-radius:12px;background:var(--sl);padding:11px;font-weight:650;color:var(--sage)}
+.ai-file-button,.ai-analyze,.ai-add,.custom-food-grid button,.add-item,.sport-actions button{min-height:48px;border-radius:13px;font-size:13px}.ai-file-button{background:var(--sl);border:1px solid #D2DFD2;color:var(--sage)}.ai-analyze,.ai-add,.sport-add,.custom-food-grid button{background:var(--sage);color:white}.ai-help,.food-help,.ai-status,.ai-result-desc{font-size:12px;line-height:1.65}.ai-context{margin-top:16px}.ai-preview{max-height:300px;border-radius:17px}.ai-result-row,.ai-config{border-radius:16px}.ai-result-head input{min-height:20px}.ai-result-fields label{font-size:11px}
+.ai-banner{display:flex;align-items:flex-start;gap:12px;padding:17px;background:#F0F2E7;border:1px solid #E3E7D7;border-radius:20px}.ai-banner-icon{flex:0 0 42px;height:42px;border-radius:14px;display:grid;place-items:center;background:#E0E8DA;color:var(--sage)}.ai-banner strong{font-size:15px}.ai-banner p{color:var(--muted);font-size:12px;line-height:1.5;margin:4px 0 0}.inline-ai{width:100%;min-height:50px;display:flex;align-items:center;gap:11px;border-radius:14px;padding:10px 14px;border:1px solid #D5E5D7;background:#EAF4EA;color:var(--sage);font-weight:800;font-size:13px}.inline-ai span{flex:1;text-align:left}
+#mealCards{display:flex;flex-direction:column;gap:15px}.meal-head{gap:12px}.meal-head h2{font-size:19px}.time-input{max-width:111px;height:44px;min-height:44px;padding:8px}.item-row{grid-template-columns:minmax(0,1fr) 60px 66px 40px;gap:6px;align-items:stretch;margin-bottom:8px}.item-row input{min-width:0;min-height:44px;font-size:13px;padding:8px 7px}.item-row .food-name{font-size:13px}.remove-item,.sport-entry-remove{width:40px;height:44px;border-radius:11px;font-size:20px;display:grid;place-items:center}.add-item{margin-top:8px;background:var(--sl);border:1px dashed #AFCBB4;font-weight:750}.meal-subtotal{border-top:1px solid var(--border);padding-top:13px}.meal-subtotal .num{color:var(--sage)}.habit-check{min-height:44px;cursor:pointer}.checkbox{width:22px;height:22px;border-color:#9DB5A4}.custom-food-grid{grid-template-columns:minmax(0,1fr) 100px}.custom-food-grid input{min-width:0;font-size:13px}
+.jar-wrap{gap:14px}.jar{width:62px;height:96px;border-radius:9px 9px 16px 16px}.glasses{grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}.glass-btn{min-width:0;min-height:42px;font-size:11px}.water-total{font-size:13px;margin-top:15px}.water-total .num{color:var(--sage)}
+.sport-types,.sport-time-pills,.sport-intensity-pills{gap:8px}.sport-type-btn,.sport-time-btn,.sport-intensity-btn{min-height:44px;padding:10px 13px;font-size:12px}.sport-entry{border-radius:17px}.sport-entry-remove{border-radius:12px}.sport-summary-box{border-radius:15px}.sport-entry-grid input,.sport-entry-grid select{min-height:44px}.sport-entry-grid label{font-size:12px}
+.checklist li{min-height:44px;margin:0 0 5px;cursor:pointer}.extra-head{min-height:44px;cursor:pointer}.extra-row:last-child{border-bottom:0}.stars-row{min-height:40px}.star{font-size:24px;cursor:pointer;min-width:32px;text-align:center}
+.summary-card{background:var(--card);color:var(--ink);border-color:var(--border)}.summary-grid div{border-color:var(--border)}.summary-total{border-color:var(--border);font-weight:700;color:var(--sage)}.summary-total .num{color:var(--sage)}
+footer{font-size:11px;line-height:1.5;max-width:550px;margin:0 auto;padding:14px 24px 22px}.footer-tip{display:block;margin-top:6px;color:var(--sage);font-weight:700}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:30;padding:8px 14px calc(8px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);border-top:1px solid #E2EAE0;box-shadow:0 -5px 25px rgba(26,50,33,.045);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}
+.bottom-nav-inner{max-width:640px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;align-items:stretch}.tab-btn{border:0;background:transparent;color:#829087;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:56px;border-radius:13px;font-weight:650;font-size:11px;padding:6px 5px}.tab-btn.active{color:var(--sage);background:#EDF4EB}.tab-btn .icon{width:21px;height:21px}.camera-tab-icon{width:28px;height:25px;display:grid;place-items:center}.camera-tab.active .camera-tab-icon{color:var(--sage)}
+@media(min-width:700px){main{padding-left:24px;padding-right:24px}.topbar{padding-left:28px;padding-right:28px}.mini-stat{padding:18px 15px}.card{padding:23px}.hero-card{padding:28px}.hero-body{margin:24px 0}}
+@media(max-width:370px){main{padding:17px 12px}.topbar{padding-left:13px;padding-right:13px}.hero-card{padding:17px}.hero-body{gap:8px}.calorie-orbit{width:99px;height:99px;flex-basis:99px}.ring-inner{width:79px;height:79px}.hero-number>span{font-size:39px}.mini-stats{gap:6px}.mini-stat{padding:12px 8px}.mini-stat strong{font-size:18px}.item-row{grid-template-columns:minmax(0,1fr) 48px 56px 35px;gap:5px}.item-row input{padding:7px 4px;font-size:12px}.remove-item{width:35px}.sport-entry-grid{grid-template-columns:1fr}.custom-food-grid{grid-template-columns:minmax(0,1fr) 85px}.ai-result-fields{grid-template-columns:minmax(0,1.5fr) minmax(50px,.7fr) minmax(50px,.7fr)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition-duration:.01ms!important}}
+
+/* 2026 UI audit fixes: task-first hydration, accessible habit controls, readable meals */
+.mini-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.water-card{border:1px solid #D9E7ED;background:linear-gradient(165deg,#FFFFFF 0%,#F3F9FB 100%);padding:19px}
+.water-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.water-eyebrow{display:block;font-size:10px;font-weight:800;letter-spacing:.13em;color:#547889;margin-bottom:3px}
+.water-card .water-card-top h2{margin:0;font-size:21px}
+.water-percent{font-size:13px;font-weight:800;color:#406A7E;background:#E7F1F6;border-radius:999px;padding:7px 11px}
+.water-value{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:12px 0 13px}
+.water-value strong{font-size:27px;font-weight:800;letter-spacing:-.055em;color:#315E73;font-variant-numeric:tabular-nums}
+.water-value>span{color:#536D78;font-size:13px}
+.water-progress{height:10px;border-radius:999px;background:#DFEAF0;overflow:hidden}
+.water-progress span{height:100%;display:block;width:0;background:#6C9DB3;border-radius:999px;transition:width .25s ease}
+.water-actions{display:grid;grid-template-columns:1fr 1fr 1.1fr;gap:8px;margin-top:14px}
+.water-actions button{min-width:0;min-height:48px;border-radius:13px;padding:8px 5px;font-size:13px;font-weight:750}
+.water-add{border:1px solid #467A92;background:#447990;color:#fff}
+.water-undo{border:1px solid #C5D8E1;background:#fff;color:#426D7E}
+.water-actions button:disabled{opacity:.45}
+.water-hint{font-size:12px;color:#5D7885;margin:10px 0 0;line-height:1.45;min-height:17px}
+.routine-intro{font-size:13px;color:var(--muted);margin:-5px 0 12px}
+.routine-groups{display:grid;gap:15px}.routine-group{margin:0}.routine-group h3{font-family:inherit;font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 7px}
+.checklist{margin:0;padding:0;list-style:none}.checklist li{margin:0;border-bottom:1px solid var(--border)}.checklist li:last-child{border-bottom:0}
+.routine-check,.habit-check,.extra-toggle{display:flex;flex-direction:row;align-items:center;gap:12px;min-height:48px;cursor:pointer;color:var(--ink);font-size:14px;font-weight:600;line-height:1.35}
+.routine-check input,.habit-check input,.extra-toggle input{appearance:none;-webkit-appearance:none;position:relative;flex:0 0 24px;width:24px;height:24px;min-height:24px;margin:0;border:2px solid #86A593;border-radius:8px;background:#fff;cursor:pointer}
+.routine-check input:checked,.habit-check input:checked,.extra-toggle input:checked{border-color:var(--sage);background:var(--sage)}
+.routine-check input:checked::after,.habit-check input:checked::after,.extra-toggle input:checked::after{content:"✓";position:absolute;inset:-1px 0 0 0;display:grid;place-items:center;color:white;font-size:16px;font-weight:800}
+.routine-check input:focus-visible,.habit-check input:focus-visible,.extra-toggle input:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
+.habit-check{margin:13px 0 2px;background:#F1F6EE;border:1px solid #DCE9D8;border-radius:14px;padding:12px;min-height:54px}
+.habit-check .habit-caption{display:block;font-weight:650}.habit-check .habit-detail{display:block;color:var(--muted);font-size:11px;font-weight:450;margin-top:2px}
+.meal-head .time-input{font-size:16px;min-width:116px}
+.item-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 48px;grid-template-areas:"name name name" "grams kcal remove";gap:9px;align-items:end;border:1px solid var(--border);border-radius:15px;padding:12px;margin-bottom:10px;background:#FBFCF9}
+.item-row .food-name-label{grid-area:name}.item-row .food-grams-label{grid-area:grams}.item-row .food-kcal-label{grid-area:kcal}
+.item-row label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:#52685A;font-weight:600;min-width:0}
+.item-row input,.item-row .food-name{font-size:16px;min-height:48px;padding:10px 11px;width:100%;min-width:0}
+.item-row .remove-item{grid-area:remove;min-height:48px;width:48px;height:48px;background:#F4EBE7;color:#865744;border:1px solid #E9DCD5;border-radius:12px}
+.add-item{width:100%;min-height:48px}
+.extra-toggle{padding-bottom:8px}.extra-fields{padding:0 0 10px 36px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.extra-fields label{font-size:12px}.extra-fields input{font-size:16px;min-width:0;min-height:44px}
+.stars-row{min-height:48px}.stars{gap:1px}.stars .star{font-size:25px;min-width:44px;min-height:44px;display:grid;place-items:center;border:0;background:transparent;line-height:1;color:#B7C2B8;border-radius:10px}
+.stars .star.on{color:#B77D48}.stars .star:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
+.custom-food-grid label{min-width:0}.custom-food-grid input{font-size:16px}
+.custom-food-grid button{min-height:48px}
+.sport-entry-remove{min-width:44px;width:44px;min-height:44px}
+.ai-result-fields input,.ai-config-fields input{font-size:16px}.ai-result-fields label{font-size:12px}
+.custom-food-pill button{min-width:32px;min-height:32px}
+#waterCard{scroll-margin-top:180px}.card[id^="card-"]{scroll-margin-top:175px}
+@media(max-width:370px){.item-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 48px;gap:7px;padding:10px}.item-row input,.item-row .food-name{font-size:16px;padding:9px}.item-row .remove-item{width:48px}.water-actions{grid-template-columns:1fr 1fr}.water-undo{grid-column:1/-1}.mini-stats{gap:9px}.mini-stat{padding:14px 10px}.custom-food-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.water-progress span{transition:none}}
+/* System dark appearance: functional tokens and high-contrast controls */
+@media (prefers-color-scheme:dark){
+ :root{color-scheme:dark;--ink:#E9F2EA;--muted:#B8C8BD;--bg:#111C16;--card:#1D2B22;--border:#35463A;--sage:#A5D5B4;--sl:#2A4032;--tur:#E3B28A;--tl:#F5DBC8;--blue:#9DC8D9;--bl:#253E49;--focus:#A5D5B4;--shadow:0 6px 18px rgba(0,0,0,.15)}
+ body,.topbar{background:var(--bg);color:var(--ink)}
+ .topbar{border-bottom:1px solid var(--border)}
+ .navbtn,.card,.mini-stat{background:var(--card);color:var(--ink);border-color:var(--border)}
+ .bottom-nav{background:rgba(24,37,29,.97);border-color:var(--border)}
+ .tab-btn{color:#B5C9BA}.tab-btn.active{color:#C4E5CE;background:#294333}
+ .brand-symbol{background:#355F47}.brand-name{color:#C2E0C9}
+ .eyebrow{color:#E4BD93}.heading-ornament{background:#273E30;color:#A5D2B0}
+ input,textarea,select,.item-row,.sport-entry{background:#1A2B21;color:var(--ink);border-color:#405849}
+ input::placeholder,textarea::placeholder{color:#AABBB0}
+ label,.item-row label,.extra-fields label{color:#CBDBD0}
+ .item-row{background:#1A2B21}.item-row input{background:#23362A}
+ .food-found{background:#263F2E!important;border-color:#6DA77D!important}.food-kcal-auto{background:#273E30!important}
+ .remove-item,.item-row .remove-item{color:#F0C5B6;background:#54392E;border-color:#765043}
+ .habit-check{background:#253D2D;border-color:#436248}
+ .routine-check input,.habit-check input,.extra-toggle input{background:#1D2B22;border-color:#A6C5AE}
+ .routine-check input:checked,.habit-check input:checked,.extra-toggle input:checked{background:#487D5A;border-color:#9ACAAB}
+ .sleep-total,.sport-summary-box{background:#2A4032;color:#C6E6CF}
+ .sport-summary-box b{color:#C7E6CF}.sport-progress{background:#3D5443}
+ .add-item,.feature-cta,.inline-ai{background:#294232;color:#DAF3E0;border-color:#426C4C}
+ .feature-copy small{color:#C2DDC8}.feature-illustration{background:#33533D;color:#DAF3E0}.feature-sparkle{background:#594731;color:#F9E0AC}
+ .sport-type-btn,.sport-time-btn,.sport-intensity-btn,.sport-clear{color:var(--ink);border-color:#49634F;background:#25392B}
+ .sport-type-btn.active,.sport-time-btn.active,.sport-intensity-btn.active{color:#fff;background:#3B6D50;border-color:#3B6D50}
+ .custom-food-grid button,.sport-add,.ai-analyze,.ai-add{background:#3B6D50;color:#fff}
+ .summary-card,.summary-total{color:var(--ink)}.summary-total .num,.meal-subtotal .num{color:#C5E5C6}
+ .water-card{background:linear-gradient(160deg,#1E313A,#1B2D36);border-color:#365669}
+ .water-eyebrow,.water-percent{color:#D0EBF6}.water-percent{background:#335267}
+ .water-value strong{color:#D2EDF9}.water-value>span,.water-hint{color:#B9D6E5}
+ .water-progress{background:#365467}.water-progress span{background:#8CBFD5}
+ .water-add{background:#386E87;border-color:#77ABBE}.water-undo{background:#243C47;border-color:#4E7789;color:#D5EAF4}
+ .ai-banner{background:#253C2D;border-color:#496149}.ai-banner-icon{background:#365340;color:#CDEBD4}
+ .ai-config,.ai-result-row{background:#24372A;border-color:#405B44}.ai-config summary{color:#C2E4CA}
+ .ai-file-button{background:#294332;color:#E0F5E4;border-color:#4B7254}.ai-preview{background:#1A2C20}
+ .ai-result-total{background:#2A4032}.ai-result-total strong{color:#C6E5CB}
+ .star{color:#627466}.stars .star{color:#738876}.stars .star.on{color:#E2B879}
+ .custom-food-pill{background:#2A3D30;border-color:#4F6756}
+ .water-card .water-hint,.ai-disclaimer{color:#B8CFCA}
+}
+
+/* Ücretsiz cihaz içi fotoğraf analizi */
+.ai-free-note{margin-top:15px;background:var(--sl);padding:15px 16px;border:1px solid var(--border);border-radius:15px}
+.ai-free-note strong{font-size:14px;color:var(--sage)}.ai-free-note p{font-size:12px;line-height:1.55;color:var(--muted);margin:6px 0 0}
+.ai-manual{margin-top:16px;border-top:1px solid var(--border);padding-top:17px}
+.ai-manual h3{font-family:Georgia,serif;font-size:17px;margin:0 0 10px}
+.ai-manual-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:9px}
+.ai-manual-grid input{font-size:16px;min-height:48px;min-width:0}
+.ai-manual-add{width:100%;margin-top:10px;padding:11px 14px;border-radius:12px;min-height:48px;background:var(--sl);color:var(--sage);border:1px solid var(--border);font-size:14px;font-weight:750}
+.ai-candidates{margin-top:13px;padding:12px;border:1px solid var(--border);border-radius:14px;background:var(--sl)}
+.ai-candidates-title{font-weight:750;font-size:13px;margin-bottom:8px}
+.ai-candidate{width:100%;display:flex;justify-content:space-between;align-items:center;gap:9px;min-height:48px;padding:9px 11px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--ink);text-align:left;margin-top:7px;font-size:13px;font-weight:650}
+.ai-candidate small{font-size:11px;color:var(--muted);white-space:nowrap}
+.ai-result-fields{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.ai-result-fields label:first-child{grid-column:1/-1}
+.ai-result-fields input{min-height:48px;font-size:16px}
+@media(max-width:370px){.ai-manual-grid{grid-template-columns:1fr}.ai-result-fields{grid-template-columns:1fr 1fr}}
+@media(prefers-color-scheme:dark){.ai-free-note,.ai-candidates{background:#294332}.ai-free-note strong{color:#D1E9D5}.ai-candidate{background:#20382A;color:#E3EFE4;border-color:#496149}.ai-manual-add{background:#294332;color:#D1E9D5}}
+</style>
+</head>
+<body><div id="app">
+<header class="topbar">
+<div class="brandline"><span aria-hidden="true" class="brand-symbol"><svg aria-hidden="true" class="icon" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="18"><path d="M20 4c-9 0-15 4-15 12a4 4 0 0 0 4 4C17 20 20 13 20 4ZM4 21c3-7 7-10 12-13"></path></svg></span><span class="brand-name">iyi<span>yaşa.</span></span><span class="header-caption">DİYET GÜNLÜĞÜ</span></div>
+<div class="topbar-inner">
+<button aria-label="Önceki gün" class="navbtn" id="prevDay" type="button">‹</button>
+<div class="date-block"><input aria-label="Tarih seç" id="datePicker" type="date"/><div class="date-display"><span class="weekday" id="weekdayLabel">—</span><span class="datenum" id="dateLabel">—</span></div></div>
+<button aria-label="Sonraki gün" class="navbtn" id="nextDay" type="button">›</button>
+</div>
+<div aria-live="polite" class="quickstats"><div class="qs-item"><span class="quick-dot sage"></span> <span class="num" id="qsCalories">0</span> kcal</div><div class="qs-item"><span class="quick-dot sky"></span> <span class="num" id="qsWater">0</span> L su</div><span id="saveIndicator" role="status">Kaydedildi</span></div>
+</header>
+<main><section aria-label="Bugün" class="screen active" id="screen-today"><div class="screen-heading"><div><span class="eyebrow">BUGÜN NASILSIN?</span><h1>İyi hisset, <em>iyi yaşa.</em></h1><p>Her küçük adım, güzel bir alışkanlık.</p></div><span aria-hidden="true" class="heading-ornament"><svg aria-hidden="true" class="icon" fill="none" height="40" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="40"><path d="M20 4c-9 0-15 4-15 12a4 4 0 0 0 4 4C17 20 20 13 20 4ZM4 21c3-7 7-10 12-13"></path></svg></span></div><section aria-label="Günlük kalori özeti" class="hero-card"><div class="hero-top"><span class="hero-eyebrow">GÜNLÜK BESLENME</span><span class="hero-date" id="heroDate">Bugün</span></div><div class="hero-body"><div class="hero-copy"><div class="hero-label">Toplam alınan</div><div class="hero-number"><span id="heroKcal">0</span><small>kcal</small></div><p>Öğünlerindeki tüm kalorilerin toplamı</p></div><div aria-label="Öğünlerin toplam kalorideki dağılımı" class="calorie-orbit" id="calorieRing" role="img"><div class="ring-inner"><svg aria-hidden="true" class="icon" fill="none" height="30" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="30"><path d="M20 4c-9 0-15 4-15 12a4 4 0 0 0 4 4C17 20 20 13 20 4ZM4 21c3-7 7-10 12-13"></path></svg><span>Günlük<br/>özet</span></div></div></div><div class="hero-divider"></div><div class="hero-macros"><div><span class="stat-bullet breakfast"></span> Kahvaltı <b id="heroBreakfast">0</b></div><div><span class="stat-bullet lunch"></span> Öğle <b id="heroLunch">0</b></div><div><span class="stat-bullet dinner"></span> Akşam <b id="heroDinner">0</b></div><div><span class="stat-bullet snack"></span> Ara öğün <b id="heroSnack">0</b></div></div></section><section class="card water-card" id="waterCard" aria-labelledby="waterHeading">
+<div class="water-card-top"><div><span class="water-eyebrow">GÜNLÜK SU</span><h2 id="waterHeading">💧 Su takibi</h2></div><span class="water-percent" id="waterPercent">0%</span></div>
+<div class="water-value"><strong id="waterTotalLabel">0 ml</strong><span>/ <span id="waterGoalLabel">3.500 ml</span> hedef</span></div>
+<div id="waterProgress" class="water-progress" role="progressbar" aria-label="Su hedefi ilerlemesi" aria-valuemin="0" aria-valuemax="3500" aria-valuenow="0" aria-valuetext="0 ml / 3500 ml"><span id="waterProgressFill"></span></div>
+<div class="water-actions" role="group" aria-label="Su tüketimi ekle veya geri al"><button type="button" id="waterAdd250" class="water-add">+250 ml</button><button type="button" id="waterAdd500" class="water-add">+500 ml</button><button type="button" id="waterUndo" class="water-undo" disabled aria-label="Son su eklemesini geri al">↶ Geri al</button></div>
+<p class="water-hint" id="waterHint" aria-live="polite">Her dokunuş günlük tüketimine eklenir.</p>
+</section><div aria-label="Günlük hızlı bilgiler" class="mini-stats"><div class="mini-stat"><div class="mini-icon peach"><svg aria-hidden="true" class="icon" fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="20"><path d="M3 12h4l3-7 4 14 3-7h4"></path></svg></div><span>Hareket</span><strong id="dashSport">0 dk</strong><small>toplam aktivite</small></div><div class="mini-stat"><div class="mini-icon lavender"><svg aria-hidden="true" class="icon" fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="20"><path d="M20.5 15.4A8.8 8.8 0 0 1 8.6 3.5 8.8 8.8 0 1 0 20.5 15.4z"></path></svg></div><span>Uyku</span><strong id="dashSleep">—</strong><small>gece süresi</small></div></div><button class="feature-cta" id="goAiQuick" type="button"><span class="feature-illustration"><svg aria-hidden="true" class="icon" fill="none" height="26" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="26"><path d="M14 4h-4l-2 3H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"></path><circle cx="12" cy="13" r="3"></circle></svg><span class="feature-sparkle"><svg aria-hidden="true" class="icon" fill="none" height="15" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="15"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 17l.8 1.2L21 19l-1.2.8L19 21l-.8-1.2L17 19l1.2-.8z"></path></svg></span></span><span class="feature-copy"><strong>Fotoğraftan öğün ekle</strong><small>AI ile yemeğini ve tahmini kaloriyi analiz et</small></span><svg aria-hidden="true" class="icon" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="22"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg></button><div class="section-heading"><div><span class="eyebrow">GÜNLÜK TAKİP</span><h2>Rutinlerim</h2></div></div><section class="card" id="morningCard"><h2>Güne başlarken</h2><div class="row2"><label>Kilo (kg)<input id="weight" step=".1" type="number"/></label><label>Su hedefi (L)<input id="waterGoal" step=".5" type="number"/></label></div><div class="row2" style="margin-top:10px"><label>Yattığım saat<input id="sleepStart" type="time"/></label><label>Kalktığım saat<input id="sleepEnd" type="time"/></label></div><div class="sleep-total">🌙 Toplam uyku: <span class="num" id="sleepTotal">—</span></div></section><section class="card routine-card" aria-labelledby="routineHeading"><h2 id="routineHeading">Günlük rutinlerim</h2><p class="routine-intro">Gün içinde tamamladıklarını işaretle.</p><div id="supplementsList" class="routine-groups"></div></section><section class="card summary-card" id="summaryCard"><h2>Öğün dökümü</h2><div class="summary-grid" id="summaryGrid"></div><div class="summary-total"><span>🔢 TOPLAM</span><span class="num" id="summaryTotal">0 kcal</span></div></section></section><section aria-label="Öğünler" class="screen" hidden="" id="screen-meals"><div class="screen-heading compact"><div><span class="eyebrow">BESLENME GÜNLÜĞÜ</span><h1>Öğünlerim<span class="heading-period">.</span></h1><p>Yediklerini kolayca kaydet ve düzenle.</p></div></div><button class="inline-ai" id="goAiMeals" type="button"><svg aria-hidden="true" class="icon" fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="20"><path d="M14 4h-4l-2 3H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"></path><circle cx="12" cy="13" r="3"></circle></svg><span>Fotoğraftan öğün ekle</span><svg aria-hidden="true" class="icon" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="18"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg></button><div id="mealCards"></div><section class="card"><h2>Besin kütüphanesi</h2>
+<div class="food-help">Besin adını öğünlerde yazıp listeden seç. Gramı girince kcal otomatik hesaplanır. Değerler yaklaşık kcal/100 g'dır; marka ve tarife göre değişebilir.</div>
+<div class="custom-food-grid">
+<label>Besin adı<input id="customFoodName" placeholder="Örn. ev köftesi"/></label>
+<label>kcal / 100 g<input id="customFoodKcal" placeholder="Örn. 250" min="0" type="number"/></label>
+<button id="addCustomFood">+ Kendi besinimi kaydet</button>
+</div>
+<div class="custom-food-list" id="customFoodList"></div>
+<datalist id="foodList"></datalist>
+</section></section><section aria-label="AI Fotoğraf" class="screen" hidden="" id="screen-ai"><div class="screen-heading compact"><div><span class="eyebrow">AKILLI BESLENME</span><h1>AI Fotoğraf<span class="heading-period">.</span></h1><p>Fotoğraftan ücretsiz yemek önerisi.</p></div></div><div class="ai-banner"><div class="ai-banner-icon"><svg aria-hidden="true" class="icon" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="22"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 17l.8 1.2L21 19l-1.2.8L19 21l-.8-1.2L17 19l1.2-.8z"></path></svg></div><div><strong>Gör, analiz et, kaydet.</strong><p>Ücretsiz, aboneliksiz: fotoğrafı telefonunda analiz et, besin ve porsiyonu kendin onayla.</p></div></div><section class="card" id="aiCard">
+<h2>Yemeğin fotoğrafını seç</h2>
+<p class="ai-help">Yemeğin fotoğrafını çek veya galeriden seç. Ücretsiz model fotoğraftaki baskın yemeği tahmin eder. Gramı sen girersin; kütüphanedeki besinlerde kalori otomatik hesaplanır. Birden fazla yemeği güvenilir şekilde ayıramaz.</p>
+<div class="ai-input-actions">
+<label class="ai-file-button" for="aiCamera">📷 Fotoğraf çek</label>
+<label class="ai-file-button" for="aiGallery">🖼️ Galeriden seç</label>
+</div>
+<input accept="image/*" aria-label="Kameradan fotoğraf çek" capture="environment" class="ai-photo-input" id="aiCamera" type="file"/>
+<input accept="image/*" aria-label="Galeriden fotoğraf seç" class="ai-photo-input" id="aiGallery" type="file"/>
+<img alt="Seçilen yemek fotoğrafı" class="ai-preview" hidden="" id="aiPreview"/>
+<div class="ai-two"><label>Hangi öğüne eklensin?<select id="aiMealSelect" style="border:1px solid var(--border);border-radius:10px;padding:9px;background:#fbfcfa;color:var(--ink);width:100%"></select></label>
+<label>Fotoğraf tarihi<input disabled="" id="aiDateLabel" type="text"/></label></div>
+
+<button class="ai-analyze" id="aiAnalyzeButton" type="button">✨ Ücretsiz fotoğraf analizi</button>
+<div aria-live="polite" class="ai-status" id="aiStatus" role="status">Fotoğraf seç; abonelik veya API anahtarı gerekmez. İlk analizde model indirilecektir.</div>
+<div class="ai-result" hidden="" id="aiResult"></div>
+<div class="ai-free-note" role="note"><strong>✓ Tamamen ücretsiz ve cihazında çalışır</strong><p>Ödeme, üyelik, API anahtarı veya sunucu kurma zorunluluğu yok. İlk kullanımda açık kaynak yemek tanıma modeli (yaklaşık 93 MB) internetten indirilir. Fotoğrafın analiz için sunucuya yüklenmez. Model tüm Türk yemeklerini tanımayabilir.</p></div>
+<div class="ai-manual"><h3>Besini kendin seç (her zaman ücretsiz)</h3><p class="ai-help">Modeli indirmeden de besin kütüphanesinden yemek ekleyebilirsin.</p><div class="ai-manual-grid"><label>Besin<input id="aiManualFood" list="foodList" placeholder="Örn. mercimek çorbası" autocomplete="off"/></label><label>Miktar (g)<input id="aiManualGrams" type="number" min="1" inputmode="numeric" placeholder="250"/></label></div><button id="aiManualAdd" class="ai-manual-add" type="button">+ Besini listeye ekle</button></div>
+<p class="ai-disclaimer">⚠️ Fotoğraf analizi yalnızca yemek sınıfını tahmin eder; gram, kalori ve makro değerlerini fotoğraftan ölçmez. Gramı kontrol et, kaloriyi düzenle. Fotoğraf cihazından dışarı gönderilmez; ilk kullanımda model indirme ve internet bağlantısı gerekir.</p>
+</section></section><section aria-label="Aktivite ve rutinler" class="screen" hidden="" id="screen-activity"><div class="screen-heading compact"><div><span class="eyebrow">HAREKET &amp; DENGE</span><h1>İyi alışkanlıklar<span class="heading-period">.</span></h1><p>Hareketini, takviyelerini ve hislerini takip et.</p></div></div><section class="card" id="sportCard">
+<h2>Hareket günlüğüm</h2>
+<div class="food-help">Birden fazla antrenman ekleyebilirsin. Türü seç, süre ve yoğunluğu belirle; istersen yakılan kaloriyi ve notunu da kaydet.</div>
+<div class="sport-types" id="sportTypes"></div>
+<div class="sport-quick-label">Hızlı süre</div>
+<div class="sport-time-pills" id="sportTimePills"></div>
+<div class="sport-quick-label">Yoğunluk</div>
+<div class="sport-intensity-pills" id="sportIntensityPills"></div>
+<div class="sport-actions">
+<button class="sport-add" id="addSportBtn">+ Spor ekle</button>
+<button class="sport-clear" id="clearSportDraft">Temizle</button>
+</div>
+<div id="sportEntries"></div>
+<div class="sport-summary-box">
+<div>Toplam süre<b><span id="sportTotalMinutes">0</span> dk</b></div>
+<div>Antrenman<b><span id="sportCount">0</span></b></div>
+<div>Yakılan kcal<b><span id="sportTotalCalories">0</span></b></div>
+<div>45 dk hedefi<b id="sportGoalStatus">—</b></div>
+</div>
+<div class="sport-progress"><span id="sportProgressBar"></span></div>
+<div class="sport-goal-text" id="sportGoalText">Günlük hedef: en az 45 dakika</div>
+</section><section class="card"><h2>Günlük ekler</h2><div id="extrasList"></div></section><section class="card"><h2>Günün notları</h2><div class="stars-row"><span>Açlık</span><div class="stars" data-key="hunger"></div></div><div class="stars-row"><span>Tokluk</span><div class="stars" data-key="fullness"></div></div><div class="stars-row"><span>Enerji</span><div class="stars" data-key="energy"></div></div><label class="notes-field">İştah / canımın çektiği şeyler<textarea id="appetite"></textarea></label><label class="notes-field">Bugün dikkatimi çeken şey<textarea id="highlight"></textarea></label></section></section></main><footer>Günlük kayıtları bu cihazda saklanır. Fotoğraf analizi ücretsizdir; besin ve porsiyon önerileri tahminidir.<span class="footer-tip">Safari · Paylaş · Ana Ekrana Ekle</span></footer><nav aria-label="Ana gezinme" class="bottom-nav"><div class="bottom-nav-inner">
+<button aria-current="page" class="tab-btn active" data-tab="today" type="button"><svg aria-hidden="true" class="icon" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="22"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 21v-8h6v8"></path></svg><span>Bugün</span></button>
+<button class="tab-btn" data-tab="meals" type="button"><svg aria-hidden="true" class="icon" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="22"><path d="M4 3v7a3 3 0 0 0 6 0V3M7 3v18M17 3v18M17 3c4 2 5 7 3 11h-3"></path></svg><span>Öğünler</span></button>
+<button class="tab-btn camera-tab" data-tab="ai" type="button"><span class="camera-tab-icon"><svg aria-hidden="true" class="icon" fill="none" height="23" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="23"><path d="M14 4h-4l-2 3H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"></path><circle cx="12" cy="13" r="3"></circle></svg></span><span>AI Foto</span></button>
+<button class="tab-btn" data-tab="activity" type="button"><svg aria-hidden="true" class="icon" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="22"><path d="M3 12h4l3-7 4 14 3-7h4"></path></svg><span>Aktivite</span></button>
+</div></nav></div>
+<script>
+"use strict";
+const MEALS=[
+{key:"breakfast",title:"Kahvaltı",icon:"🍳",habit:"Peynir + kekik + çörek otu",rows:3},
+{key:"lunch",title:"Öğle",icon:"🥗",habit:null,rows:3},
+{key:"dinner",title:"Akşam",icon:"🍲",habit:"Çorbaya zerdeçal",rows:3},
+{key:"snack",title:"Ara Öğün / Acıkma",icon:"🍎",habit:null,rows:2}];
+const SUPPLEMENTS=[
+{key:"morningBerberin",label:"Sabah — Berberin"},
+{key:"appleVinegar",label:"Elma sirkesi + su"},
+{key:"ala",label:"ALA"},
+{key:"eveningBerberin",label:"Akşam — Berberin"},
+{key:"insulex",label:"Yemekten 40–50 dk sonra — Insulex"}];
+const EXTRAS=[
+{key:"kefir",label:"Kefir",unit:"ml",brand:true},
+{key:"mineralWater",label:"Maden suyu",unit:"ml",brand:true},
+{key:"pumpkinSeed",label:"Kabak çekirdeği",unit:"g / 2 avuç",brand:false}];
+
+const SPORT_TYPES=[
+{key:"walk",label:"Yürüyüş",icon:"🚶"},
+{key:"run",label:"Koşu",icon:"🏃"},
+{key:"elliptical",label:"Eliptik",icon:"⭕"},
+{key:"bike",label:"Bisiklet",icon:"🚴"},
+{key:"fitness",label:"Fitness",icon:"🏋️"},
+{key:"weights",label:"Ağırlık",icon:"💪"},
+{key:"pilates",label:"Pilates",icon:"🧘"},
+{key:"yoga",label:"Yoga",icon:"🌿"},
+{key:"swim",label:"Yüzme",icon:"🏊"},
+{key:"stairs",label:"Merdiven / Stairmaster",icon:"🪜"},
+{key:"rowing",label:"Kürek",icon:"🚣"},
+{key:"hiit",label:"HIIT",icon:"⚡"},
+{key:"other",label:"Diğer",icon:"➕"}];
+const SPORT_TIMES=[15,30,45,60,90];
+const SPORT_INTENSITIES=["Hafif","Orta","Yoğun"];
+let sportDraft={type:"",minutes:"",intensity:"Orta",calories:"",note:""};
+function sportTypeLabel(key){
+  let x=SPORT_TYPES.find(s=>s.key===key);return x?x.icon+" "+x.label:key||"Spor"
+}
+function sportEntriesData(){
+  if(!Array.isArray(data.sports))data.sports=[];
+  return data.sports
+}
+function renderSportControls(){
+  let types=document.getElementById("sportTypes");types.innerHTML="";
+  SPORT_TYPES.forEach(s=>{
+    let b=document.createElement("button");b.type="button";
+    b.className="sport-type-btn"+(sportDraft.type===s.key?" active":"");
+    b.textContent=s.icon+" "+s.label;
+    b.onclick=()=>{sportDraft.type=s.key;renderSportControls()};
+    types.appendChild(b)
+  });
+  let times=document.getElementById("sportTimePills");times.innerHTML="";
+  SPORT_TIMES.forEach(n=>{
+    let b=document.createElement("button");b.type="button";
+    b.className="sport-time-btn"+(String(sportDraft.minutes)===String(n)?" active":"");
+    b.textContent=n+" dk";
+    b.onclick=()=>{sportDraft.minutes=n;renderSportControls()};
+    times.appendChild(b)
+  });
+  let ints=document.getElementById("sportIntensityPills");ints.innerHTML="";
+  SPORT_INTENSITIES.forEach(x=>{
+    let b=document.createElement("button");b.type="button";
+    b.className="sport-intensity-btn"+(sportDraft.intensity===x?" active":"");
+    b.textContent=x;
+    b.onclick=()=>{sportDraft.intensity=x;renderSportControls()};
+    ints.appendChild(b)
+  })
+}
+function addSportFromDraft(){
+  if(!sportDraft.type){alert("Önce spor türünü seç.");return}
+  if(!sportDraft.minutes){alert("Süreyi seç.");return}
+  sportEntriesData().push({
+    id:Date.now()+Math.random(),
+    type:sportDraft.type,
+    minutes:Number(sportDraft.minutes)||0,
+    intensity:sportDraft.intensity||"Orta",
+    calories:"",
+    note:""
+  });
+  sportDraft={type:"",minutes:"",intensity:"Orta",calories:"",note:""};
+  renderSport();save()
+}
+function renderSport(){
+  renderSportControls();
+  let box=document.getElementById("sportEntries");box.innerHTML="";
+  sportEntriesData().forEach((s,i)=>{
+    let card=document.createElement("div");card.className="sport-entry";
+    card.innerHTML=`
+      <div class="sport-entry-head">
+        <div class="sport-entry-title">${esc(sportTypeLabel(s.type))}</div>
+        <button class="sport-entry-remove" type="button" aria-label="${esc(sportTypeLabel(s.type))} kaydını sil">×</button>
+      </div>
+      <div class="sport-entry-grid">
+        <label>Süre (dk)<input class="sp-min" type="number" min="0" value="${esc(s.minutes)}"></label>
+        <label>Yoğunluk
+          <select class="sp-int" style="border:1px solid var(--border);border-radius:10px;padding:9px 10px;background:#fbfcfa;color:var(--ink);width:100%">
+            ${SPORT_INTENSITIES.map(x=>`<option ${s.intensity===x?"selected":""}>${x}</option>`).join("")}
+          </select>
+        </label>
+        <label>Yakılan kcal (isteğe bağlı)<input class="sp-kcal" type="number" min="0" placeholder="örn. 320" value="${esc(s.calories||"")}"></label>
+        <label class="sport-entry-note">Not<input class="sp-note" type="text" placeholder="örn. orta tempo, 6 km" value="${esc(s.note||"")}"></label>
+      </div>`;
+    card.querySelector(".sport-entry-remove").onclick=()=>{data.sports.splice(i,1);renderSport();save()};
+    card.querySelector(".sp-min").oninput=e=>{s.minutes=e.target.value;updateSportSummary();save()};
+    card.querySelector(".sp-int").onchange=e=>{s.intensity=e.target.value;save()};
+    card.querySelector(".sp-kcal").oninput=e=>{s.calories=e.target.value;updateSportSummary();save()};
+    card.querySelector(".sp-note").oninput=e=>{s.note=e.target.value;save()};
+    box.appendChild(card)
+  });
+  updateSportSummary()
+}
+function updateSportSummary(){
+  let arr=sportEntriesData();
+  let mins=arr.reduce((a,s)=>a+(parseFloat(s.minutes)||0),0);
+  let kc=arr.reduce((a,s)=>a+(parseFloat(s.calories)||0),0);
+  sportTotalMinutes.textContent=Math.round(mins);
+  sportCount.textContent=arr.length;
+  sportTotalCalories.textContent=Math.round(kc);
+  let done=mins>=45;
+  sportGoalStatus.textContent=done?"✓ Tamam":"Eksik";
+  sportProgressBar.style.width=Math.min(100,mins/45*100)+"%";
+  sportGoalText.textContent=done?`45 dk hedefi tamamlandı · ${Math.round(mins)} dk spor`:`45 dk hedefi için ${Math.max(0,45-Math.round(mins))} dk kaldı`;updateDashboard()
+}
+
+const FOOD_DB_BASE={"Haşlanmış yumurta":155,"Yumurta":143,"Sahanda yumurta":196,"Omlet sade":154,"Menemen":95,"Menemen peynirli":125,"Yumurta beyazı":52,"Yumurta sarısı":322,"Beyaz peynir":264,"Tam yağlı beyaz peynir":290,"Az yağlı beyaz peynir":180,"Kaşar peyniri":404,"Taze kaşar":350,"Eski kaşar":430,"Lor peyniri":90,"Çökelek":105,"Labne":225,"Krem peynir":240,"Mozzarella":280,"Parmesan":431,"Süzme yoğurt":120,"Yoğurt tam yağlı":61,"Yoğurt yarım yağlı":50,"Yoğurt light":43,"Kefir":60,"Süt tam yağlı":61,"Süt yarım yağlı":47,"Süt light":35,"Ayran":35,"Cacık":55,"Beyaz ekmek":265,"Tam buğday ekmeği":247,"Çavdar ekmeği":259,"Kepekli ekmek":250,"Tost ekmeği":270,"Lavaş":290,"Bazlama":280,"Pide ekmeği":275,"Simit":330,"Yulaf ezmesi":389,"Granola":450,"Mısır gevreği":357,"Pirinç pilavı":130,"Şehriyeli pirinç pilavı":155,"Bulgur pilavı":120,"Makarna haşlanmış":157,"Tam buğday makarna":149,"Erişte":160,"Kuskus pişmiş":112,"Kinoa pişmiş":120,"Izgara tavuk göğsü":165,"Tavuk göğsü haşlanmış":165,"Tavuk göğsü çiğ":120,"Tavuk but ızgara":209,"Tavuk kanat":250,"Tavuk sote":145,"Köri soslu tavuk":170,"Fırında tavuk":190,"Tavuk şiş":180,"Tavuk döner":215,"Hindi göğüs":135,"Hindi füme":110,"Dana eti yağsız pişmiş":200,"Dana biftek ızgara":250,"Dana bonfile":230,"Et sote":190,"Sac kavurma":250,"Dana kavurma":290,"Et döner":240,"Köfte ızgara":240,"İnegöl köfte":260,"Kasap köfte":250,"Adana kebap":260,"Urfa kebap":250,"Kuzu şiş":270,"Kuzu pirzola":300,"Kuzu eti":294,"Sucuk":450,"Pastırma":250,"Somon ızgara":208,"Levrek ızgara":124,"Çipura ızgara":145,"Palamut ızgara":190,"Hamsi ızgara":160,"Hamsi tava":260,"Sardalya ızgara":208,"Uskumru ızgara":230,"Ton balığı suda":116,"Ton balığı yağda":198,"Alabalık ızgara":168,"Mezgit ızgara":120,"Mezgit tava":210,"Karides haşlanmış":99,"Kalamar ızgara":120,"Mercimek haşlanmış":116,"Yeşil mercimek yemeği":115,"Kırmızı mercimek yemeği":105,"Nohut haşlanmış":164,"Nohut yemeği":150,"Kuru fasulye haşlanmış":127,"Kuru fasulye yemeği":145,"Barbunya pilaki":135,"Bezelye yemeği":90,"Humus":166,"Mercimek çorbası":70,"Ezogelin çorbası":65,"Tarhana çorbası":60,"Yayla çorbası":65,"Tavuk suyu çorbası":55,"Domates çorbası":55,"Sebze çorbası":45,"Mantar çorbası":70,"İşkembe çorbası":90,"Kelle paça çorbası":120,"Zeytinyağlı taze fasulye":90,"Karnıyarık":170,"İmam bayıldı":145,"Musakka":155,"Türlü":80,"Sebzeli türlü":80,"Bamya yemeği":75,"Pırasa yemeği":80,"Ispanak yemeği":75,"Kabak yemeği":65,"Patlıcan yemeği":85,"Kapuska":70,"Kısır":170,"Mercimek köftesi":160,"Çiğ köfte etsiz":180,"Dolma biber":135,"Yaprak sarma zeytinyağlı":170,"Mantı":220,"Lahmacun":230,"Pide kıymalı":260,"Pide kaşarlı":285,"Gözleme peynirli":250,"Gözleme patatesli":230,"Domates":18,"Salatalık":15,"Marul":15,"Roka":25,"Maydanoz":36,"Biber yeşil":20,"Kırmızı biber":31,"Havuç":41,"Brokoli":34,"Karnabahar":25,"Kabak":17,"Patlıcan":25,"Ispanak":23,"Mantar":22,"Soğan":40,"Sarımsak":149,"Patates haşlanmış":87,"Patates fırında":120,"Patates kızartması":312,"Tatlı patates":86,"Mısır haşlanmış":96,"Avokado":160,"Elma":52,"Muz":89,"Portakal":47,"Mandalina":53,"Armut":57,"Şeftali":39,"Nektarin":44,"Kayısı":48,"Erik":46,"Kiraz":63,"Vişne":50,"Çilek":32,"Karpuz":30,"Kavun":34,"Üzüm":69,"Nar":83,"Kivi":61,"Ananas":50,"Mango":60,"Yaban mersini":57,"Ahududu":52,"Böğürtlen":43,"Kuru kayısı":241,"Kuru üzüm":299,"Hurma":282,"İncir":74,"Kuru incir":249,"Badem":579,"Fındık":628,"Ceviz":654,"Antep fıstığı":562,"Kaju":553,"Yer fıstığı":567,"Ay çekirdeği":584,"Kabak çekirdeği":559,"Chia tohumu":486,"Keten tohumu":534,"Susam":573,"Tahin":595,"Fıstık ezmesi":588,"Zeytinyağı":884,"Tereyağı":717,"Mayonez":680,"Ketçap":112,"Hardal":66,"Bal":304,"Pekmez":290,"Reçel":260,"Bitter çikolata":598,"Sütlü çikolata":535,"Dondurma":207,"Sütlaç":130,"Kazandibi":150,"Muhallebi":120,"Baklava":430,"Künefe":360,"Revani":300,"Lokum":350,"Met helvası":470,"Bisküvi":450,"Kraker":430,"Patlamış mısır yağsız":387,"Türk kahvesi şekersiz":2,"Filtre kahve şekersiz":2,"Espresso":9,"Cappuccino":45,"Latte":55,"Çay şekersiz":1,"Portakal suyu":45,"Elma suyu":46,"Kola":42,"Kola şekersiz":0,"Maden suyu":0,"Tuzsuz siyah zeytin":116,"Tuzsuz yeşil zeytin":145,"Siyah zeytin":116,"Yeşil zeytin":145,"Az tuzlu siyah zeytin":116,"Az tuzlu yeşil zeytin":145};
+
+function normFood(s){return String(s||"").trim().toLocaleLowerCase("tr-TR").replace(/\s+/g," ")}
+function customFoods(){try{return JSON.parse(localStorage.getItem("diet-custom-foods")||"{}")}catch(e){return{}}}
+function fullFoodDB(){
+  let db={};
+  Object.entries(FOOD_DB_BASE).forEach(([n,k])=>db[normFood(n)]={name:n,kcal:k});
+  Object.entries(customFoods()).forEach(([n,k])=>db[normFood(n)]={name:n,kcal:Number(k)});
+  return db
+}
+function foodMatch(name){return fullFoodDB()[normFood(name)]||null}
+function calcFoodKcal(name,grams){
+  let f=foodMatch(name),g=parseFloat(grams);
+  if(!f||!Number.isFinite(g)||g<0)return null;
+  return Math.round(f.kcal*g/100)
+}
+function renderFoodDatalist(){
+  let dl=document.getElementById("foodList"); if(!dl)return;
+  dl.innerHTML="";
+  Object.values(fullFoodDB()).sort((a,b)=>a.name.localeCompare(b.name,"tr")).forEach(f=>{
+    let o=document.createElement("option");o.value=f.name;o.label=f.kcal+" kcal / 100 g";dl.appendChild(o)
+  });
+  renderCustomFoodList()
+}
+function renderCustomFoodList(){
+  let box=document.getElementById("customFoodList"); if(!box)return;
+  let cf=customFoods(), ents=Object.entries(cf);
+  box.innerHTML=ents.length?"Kaydettiklerin: ":"";
+  ents.forEach(([n,k])=>{
+    let p=document.createElement("span");p.className="custom-food-pill";
+    p.innerHTML=`${esc(n)} · ${esc(k)} kcal/100 g <button aria-label="${esc(n)} besinini kütüphaneden sil">×</button>`;
+    p.querySelector("button").onclick=()=>{let x=customFoods();delete x[n];localStorage.setItem("diet-custom-foods",JSON.stringify(x));renderFoodDatalist()};
+    box.appendChild(p)
+  })
+}
+function addCustomFoodNow(){
+  let n=(customFoodName.value||"").trim(),k=parseFloat(customFoodKcal.value);
+  if(!n||!Number.isFinite(k)||k<0){alert("Besin adı ve kcal / 100 g değerini gir.");return}
+  let x=customFoods();x[n]=k;localStorage.setItem("diet-custom-foods",JSON.stringify(x));
+  customFoodName.value="";customFoodKcal.value="";renderFoodDatalist()
+}
+
+let currentDate=new Date(),data,saveTimer;
+
+function keyDate(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function dateText(d){return String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+d.getFullYear()}
+function emptyMeal(n){return{time:"",habit:false,items:Array.from({length:n},()=>({name:"",grams:"",kcal:""}))}}
+function defaults(){let meals={},supplements={},extras={};MEALS.forEach(m=>meals[m.key]=emptyMeal(m.rows));SUPPLEMENTS.forEach(s=>supplements[s.key]=false);EXTRAS.forEach(e=>extras[e.key]={checked:false,brand:"",amount:""});return{weight:"",sleep:{bedtime:"",wake:""},waterGoal:3.5,meals,supplements,extras,water:0,waterMl:0,waterHistory:[],sport:{duration:"",exercise:"",completed:false},sports:[],notes:{hunger:0,fullness:0,energy:0,appetite:"",highlight:""}}}
+function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;")}
+function loadDay(d){flushPendingSave();currentDate=d;try{data=JSON.parse(localStorage.getItem("diet-entry-"+keyDate(d)))||defaults()}catch(e){data=defaults()}normalize();render();if(document.getElementById("aiDateLabel"))aiSyncDate()}
+function normalize(){
+  const hasMl=Object.prototype.hasOwnProperty.call(data,"waterMl");
+  let f=defaults();data=Object.assign(f,data);
+  if(!hasMl){const goal=positiveWaterGoalMl();data.waterMl=Math.round(Math.max(0,Number(data.water)||0)*goal/12);}
+  data.waterMl=Math.max(0,Math.round(Number(data.waterMl)||0));
+  if(!Array.isArray(data.waterHistory))data.waterHistory=[];
+  data.waterHistory=data.waterHistory.filter(x=>Number.isFinite(Number(x))&&Number(x)>0).slice(-100);
+  MEALS.forEach(m=>{if(!data.meals[m.key])data.meals[m.key]=emptyMeal(m.rows);if(!Array.isArray(data.meals[m.key].items))data.meals[m.key].items=emptyMeal(m.rows).items});SUPPLEMENTS.forEach(s=>{if(typeof data.supplements[s.key]!=="boolean")data.supplements[s.key]=false});EXTRAS.forEach(e=>{if(!data.extras[e.key])data.extras[e.key]={checked:false,brand:"",amount:""}});if(!data.sleep||typeof data.sleep!=="object")data.sleep={bedtime:"",wake:""};if(!data.sport)data.sport={duration:"",exercise:"",completed:false};
+if(!Array.isArray(data.sports)){
+  data.sports=[];
+  if(data.sport&&(data.sport.duration||data.sport.exercise)){
+    data.sports.push({id:Date.now(),type:"other",minutes:data.sport.duration||"",intensity:"Orta",calories:"",note:data.sport.exercise||""})
+  }
+}
+if(!data.notes)data.notes={hunger:0,fullness:0,energy:0,appetite:"",highlight:""}}
+let pendingSave=null;
+function flushPendingSave(){
+  if(!pendingSave)return;
+  clearTimeout(saveTimer);
+  try{localStorage.setItem(pendingSave.key,pendingSave.payload);saveIndicator.textContent="Kaydedildi";}
+  catch(e){saveIndicator.textContent="Kaydedilemedi";}
+  pendingSave=null;
+}
+function save(){
+  clearTimeout(saveTimer);
+  pendingSave={key:"diet-entry-"+keyDate(currentDate),payload:JSON.stringify(data)};
+  saveIndicator.textContent="Kaydediliyor…";saveIndicator.classList.add("show");
+  saveTimer=setTimeout(()=>{flushPendingSave();setTimeout(()=>saveIndicator.classList.remove("show"),1000)},250);
+}
+window.addEventListener("pagehide",flushPendingSave);
+function positiveWaterGoalMl(){const g=Number(data.waterGoal);return Math.max(250,Math.round((Number.isFinite(g)&&g>0?g:3.5)*1000));}
+function formatWaterMl(n){return Math.round(n).toLocaleString("tr-TR")+" ml";}
+function waterLiters(n){return (Math.round(n/10)/100).toLocaleString("tr-TR",{maximumFractionDigits:2})+" L";}
+
+function sleepHours(){if(!data.sleep.bedtime||!data.sleep.wake)return null;let [a,b]=data.sleep.bedtime.split(":").map(Number),[c,e]=data.sleep.wake.split(":").map(Number),x=c*60+e-(a*60+b);if(x<=0)x+=1440;return Math.round(x/6)/10}
+function mealTotal(k){return data.meals[k].items.reduce((s,i)=>s+(parseFloat(i.kcal)||0),0)}
+function renderHeader(){weekdayLabel.textContent=currentDate.toLocaleDateString("tr-TR",{weekday:"long"});dateLabel.textContent=dateText(currentDate);datePicker.value=keyDate(currentDate)}
+function buildMeals(){
+  const container=document.getElementById("mealCards");container.innerHTML="";
+  MEALS.forEach(m=>{
+    const card=document.createElement("section");card.className="card";card.id="card-"+m.key;
+    card.innerHTML=`<div class="meal-head"><h2 id="heading-${m.key}">${m.icon} ${m.title}</h2><label class="meal-time-label">Saat<input class="time-input" type="time" id="time-${m.key}" aria-label="${m.title} saati"></label></div><div id="items-${m.key}"></div>${m.habit?`<label class="habit-check" for="habitbox-${m.key}"><input type="checkbox" id="habitbox-${m.key}"><span><span class="habit-caption">${m.habit} eklendi</span><span class="habit-detail">${m.title} alışkanlığı</span></span></label>`:""}<button type="button" class="add-item">+ Besin ekle</button><div class="meal-subtotal"><span>${m.title} toplamı</span><span class="num" id="subtotal-${m.key}">0 kcal</span></div>`;
+    container.appendChild(card);
+    card.querySelector(".add-item").onclick=()=>{data.meals[m.key].items.push({name:"",grams:"",kcal:""});renderItems(m.key);save()};
+    card.querySelector(".time-input").oninput=e=>{data.meals[m.key].time=e.target.value;save()};
+    if(m.habit)card.querySelector(".habit-check input").onchange=e=>{data.meals[m.key].habit=e.target.checked;save()};
+  });
+}
+function renderItems(k){
+  const box=document.getElementById("items-"+k),items=data.meals[k].items;
+  box.innerHTML="";
+  items.forEach((it,i)=>{
+    const row=document.createElement("div");row.className="item-row";
+    row.innerHTML=`<label class="food-name-label">Besin<input class="food-name" list="foodList" placeholder="Yemek adı" value="${esc(it.name)}"></label><label class="food-grams-label">Miktar (g)<input class="food-grams" type="number" min="0" inputmode="decimal" placeholder="0" value="${esc(it.grams)}"></label><label class="food-kcal-label">Kalori (kcal)<input class="food-kcal" type="number" min="0" inputmode="decimal" placeholder="0" value="${esc(it.kcal)}"></label><button class="remove-item" type="button" title="Besini sil" aria-label="${esc(it.name||'Boş besin satırını')} sil">×</button>`;
+    const nameIn=row.querySelector(".food-name"),gramsIn=row.querySelector(".food-grams"),kcalIn=row.querySelector(".food-kcal"),remove=row.querySelector(".remove-item");
+    function autoCalc(){
+      const matched=foodMatch(it.name),kcal=calcFoodKcal(it.name,it.grams);
+      nameIn.classList.toggle("food-found",!!matched);
+      if(kcal!==null){it.kcal=String(kcal);kcalIn.value=kcal;kcalIn.classList.add("food-kcal-auto");}
+      else kcalIn.classList.remove("food-kcal-auto");
+      updateSummary();save();
+    }
+    nameIn.oninput=e=>{it.name=e.target.value;remove.setAttribute("aria-label",(it.name||"Boş besin satırını")+" sil");autoCalc()};
+    nameIn.onchange=e=>{it.name=e.target.value;autoCalc()};
+    gramsIn.oninput=e=>{it.grams=e.target.value;autoCalc()};
+    kcalIn.oninput=e=>{it.kcal=e.target.value;kcalIn.classList.remove("food-kcal-auto");updateSummary();save()};
+    if(foodMatch(it.name))nameIn.classList.add("food-found");
+    remove.onclick=()=>{if(items.length>1)items.splice(i,1);else Object.assign(it,{name:"",grams:"",kcal:""});renderItems(k);updateSummary();save()};
+    box.appendChild(row);
+  });
+  document.getElementById("subtotal-"+k).textContent=mealTotal(k)+" kcal";
+  const habit=document.getElementById("habitbox-"+k);
+  if(habit)habit.checked=!!data.meals[k].habit;
+}
+function renderSupp(){
+  const root=document.getElementById("supplementsList");root.innerHTML="";
+  const groups=[{label:"Sabah",keys:["morningBerberin","appleVinegar","ala"]},{label:"Akşam",keys:["eveningBerberin","insulex"]}];
+  groups.forEach(group=>{
+    const wrap=document.createElement("section");wrap.className="routine-group";
+    const title=document.createElement("h3");title.textContent=group.label;wrap.appendChild(title);
+    const ul=document.createElement("ul");ul.className="checklist";
+    group.keys.forEach(key=>{
+      const supplement=SUPPLEMENTS.find(s=>s.key===key);if(!supplement)return;
+      const li=document.createElement("li"),label=document.createElement("label"),input=document.createElement("input"),span=document.createElement("span");
+      label.className="routine-check";input.type="checkbox";input.checked=!!data.supplements[key];span.textContent=supplement.label;
+      input.onchange=e=>{data.supplements[key]=e.target.checked;save()};
+      label.append(input,span);li.appendChild(label);ul.appendChild(li);
+    });
+    wrap.appendChild(ul);root.appendChild(wrap);
+  });
+}
+function renderExtras(){
+  extrasList.innerHTML="";
+  EXTRAS.forEach(e=>{
+    const x=data.extras[e.key],row=document.createElement("div");row.className="extra-row";
+    row.innerHTML=`<label class="extra-toggle"><input type="checkbox" class="extra-check"><span>${e.label}</span></label><div class="extra-fields">${e.brand?`<label>Marka<input class="extra-brand" placeholder="Marka" value="${esc(x.brand)}"></label>`:""}<label>Miktar (${e.unit})<input class="extra-amount" placeholder="Miktar" value="${esc(x.amount)}"></label></div>`;
+    const check=row.querySelector(".extra-check");check.checked=!!x.checked;
+    check.onchange=ev=>{x.checked=ev.target.checked;save()};
+    if(e.brand)row.querySelector(".extra-brand").oninput=ev=>{x.brand=ev.target.value;save()};
+    row.querySelector(".extra-amount").oninput=ev=>{x.amount=ev.target.value;save()};
+    extrasList.appendChild(row);
+  });
+}
+function addWater(ml){
+  if(!Number.isFinite(ml)||ml<=0)return;
+  data.waterMl=Math.max(0,Number(data.waterMl)||0)+ml;
+  data.waterHistory.push(ml);
+  renderWater();updateStats();save();
+}
+function undoWater(){
+  if(!data.waterHistory?.length)return;
+  const ml=Number(data.waterHistory.pop())||0;
+  data.waterMl=Math.max(0,(Number(data.waterMl)||0)-ml);
+  renderWater();updateStats();save();
+}
+function renderWater(){
+  const ml=Math.max(0,Number(data.waterMl)||0),goal=positiveWaterGoalMl();
+  const percent=Math.round(ml/goal*100);
+  document.getElementById("waterTotalLabel").textContent=formatWaterMl(ml);
+  document.getElementById("waterGoalLabel").textContent=formatWaterMl(goal);
+  document.getElementById("waterPercent").textContent=percent+"%";
+  document.getElementById("waterProgressFill").style.width=Math.min(100,percent)+"%";
+  const progress=document.getElementById("waterProgress");
+  progress.setAttribute("aria-valuemax",String(goal));progress.setAttribute("aria-valuenow",String(Math.min(goal,ml)));
+  progress.setAttribute("aria-valuetext",formatWaterMl(ml)+" / "+formatWaterMl(goal));
+  const undo=document.getElementById("waterUndo");undo.disabled=!data.waterHistory.length;
+  document.getElementById("waterHint").textContent=ml>=goal?"Günlük su hedefin tamamlandı.":"Hedefe "+formatWaterMl(goal-ml)+" kaldı.";
+}
+function renderStars(){
+  const names={hunger:"Açlık",fullness:"Tokluk",energy:"Enerji"};
+  ["hunger","fullness","energy"].forEach(k=>{
+    const group=document.querySelector('.stars[data-key="'+k+'"]');group.innerHTML="";group.setAttribute("role","group");group.setAttribute("aria-label",names[k]);
+    for(let i=1;i<=5;i++){
+      const star=document.createElement("button");star.type="button";
+      star.className="star"+(i<=data.notes[k]?" on":"");star.textContent="★";
+      star.setAttribute("aria-label",names[k]+" "+i+" / 5");star.setAttribute("aria-pressed",String(data.notes[k]===i));
+      star.onclick=()=>{data.notes[k]=data.notes[k]===i?i-1:i;renderStars();save()};group.appendChild(star);
+    }
+  });
+  appetite.value=data.notes.appetite;highlight.value=data.notes.highlight;
+}
+
+function updateDashboard(){
+  if(!data||!data.meals)return;
+  const t=MEALS.reduce((n,m)=>n+mealTotal(m.key),0);
+  const el=document.getElementById("heroKcal");if(!el)return;
+  el.textContent=Math.round(t).toLocaleString("tr-TR");
+  document.getElementById("heroDate").textContent=dateText(currentDate);
+  const colors=["#E5C8A1","#A7CFAE","#D59D78","#A2B8CE"];
+  const parts=[];let from=0;
+  const ids=["heroBreakfast","heroLunch","heroDinner","heroSnack"];
+  MEALS.forEach((m,i)=>{
+    let n=mealTotal(m.key);document.getElementById(ids[i]).textContent=Math.round(n).toLocaleString("tr-TR");
+    const to=from+(t>0?n/t*100:0);
+    if(t>0&&n>0)parts.push(`${colors[i]} ${from.toFixed(2)}% ${to.toFixed(2)}%`);
+    from=to;
+  });
+  document.getElementById("calorieRing").style.background=t>0?`conic-gradient(${parts.join(",")})`:"conic-gradient(#769982 0% 100%)";
+  const waterGoal=parseFloat(data.waterGoal)||3.5;
+  // Su miktarı ayrı bir hızlı işlem kartında gösterilir.
+  const mins=(Array.isArray(data.sports)?data.sports:[]).reduce((n,s)=>n+(parseFloat(s.minutes)||0),0);
+  document.getElementById("dashSport").textContent=Math.round(mins)+" dk";
+  const h=sleepHours();document.getElementById("dashSleep").textContent=h===null?"—":String(h).replace(".",",")+" sa";
+}
+function updateStats(){
+  const total=MEALS.reduce((sum,m)=>sum+mealTotal(m.key),0);
+  MEALS.forEach(m=>{const subtotal=document.getElementById("subtotal-"+m.key);if(subtotal)subtotal.textContent=mealTotal(m.key)+" kcal"});
+  qsCalories.textContent=total;
+  qsWater.textContent=waterLiters(Number(data.waterMl)||0);
+  updateDashboard();
+}
+function updateSummary(){summaryGrid.innerHTML="";let t=0;MEALS.forEach(m=>{let x=mealTotal(m.key);t+=x;let d=document.createElement("div");d.innerHTML=`<span>${m.title}</span><span class="num">${x} kcal</span>`;summaryGrid.appendChild(d)});summaryTotal.textContent=t+" kcal";updateStats()}
+function render(){renderHeader();weight.value=data.weight;waterGoal.value=data.waterGoal;sleepStart.value=data.sleep.bedtime;sleepEnd.value=data.sleep.wake;sleepTotal.textContent=(sleepHours()??"—")+(sleepHours()===null?"":" saat");MEALS.forEach(m=>{document.getElementById("time-"+m.key).value=data.meals[m.key].time;renderItems(m.key)});renderSupp();renderExtras();renderWater();renderSport();renderStars();updateSummary()}
+weight.oninput=e=>{data.weight=e.target.value;save()};waterGoal.oninput=e=>{data.waterGoal=e.target.value;renderWater();updateStats();save()};sleepStart.oninput=e=>{data.sleep.bedtime=e.target.value;render();save()};sleepEnd.oninput=e=>{data.sleep.wake=e.target.value;render();save()};addSportBtn.onclick=addSportFromDraft;clearSportDraft.onclick=()=>{sportDraft={type:"",minutes:"",intensity:"Orta",calories:"",note:""};renderSportControls()};appetite.oninput=e=>{data.notes.appetite=e.target.value;save()};highlight.oninput=e=>{data.notes.highlight=e.target.value;save()};
+prevDay.onclick=()=>{let d=new Date(currentDate);d.setDate(d.getDate()-1);loadDay(d)};nextDay.onclick=()=>{let d=new Date(currentDate);d.setDate(d.getDate()+1);loadDay(d)};datePicker.onchange=e=>{let [y,m,d]=e.target.value.split("-").map(Number);loadDay(new Date(y,m-1,d))};
+addCustomFood.onclick=addCustomFoodNow;waterAdd250.onclick=()=>addWater(250);waterAdd500.onclick=()=>addWater(500);waterUndo.onclick=undoWater;
+
+// --- AI fotoğraf analizi ---
+let aiImageData = "";
+let aiItems = [];
+let aiPredictions = [];
+let aiAnalysisDay = "";
+let aiIsBusy = false;
+let aiModelPromise = null;
+const aiMaxImageBytes = 15 * 1024 * 1024;
+// Bu modelin lisansı Apache-2.0'dır. Fotoğraf yalnızca cihazda analiz edilir.
+const AI_LOCAL_MODEL = 'onnx-community/swin-finetuned-food101-ONNX';
+const AI_JS_CDN = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1';
+const AI_FOOD_NAMES = {
+  apple_pie:'Elmalı turta',baklava:'Baklava',beet_salad:'Pancarlı salata',bruschetta:'Bruschetta',
+  caesar_salad:'Sezar salata',caprese_salad:'Caprese salata',carrot_cake:'Havuçlu kek',cheese_plate:'Peynir tabağı',
+  chicken_curry:'Köri soslu tavuk',chicken_wings:'Tavuk kanat',chocolate_cake:'Çikolatalı kek',
+  clam_chowder:'Deniz ürünleri çorbası',club_sandwich:'Kulüp sandviç',croque_madame:'Peynirli tost',
+  deviled_eggs:'Yumurta',donuts:'Donut',dumplings:'Mantı',edamame:'Edamame',
+  fish_and_chips:'Balık ve patates kızartması',french_fries:'Patates kızartması',
+  french_onion_soup:'Soğan çorbası',fried_calamari:'Kalamar kızartması',fried_rice:'Pirinç pilavı',
+  garlic_bread:'Sarımsaklı ekmek',greek_salad:'Yunan salatası',grilled_salmon:'Somon ızgara',
+  hamburger:'Hamburger',hummus:'Humus',ice_cream:'Dondurma',lasagna:'Lazanya',
+  macaroni_and_cheese:'Peynirli makarna',omelette:'Omlet sade',onion_rings:'Soğan halkası',
+  pancakes:'Pankek',pizza:'Pizza',risotto:'Risotto',spaghetti_bolognese:'Kıymalı makarna',
+  spaghetti_carbonara:'Spagetti carbonara',steak:'Dana biftek ızgara',sushi:'Suşi',
+  strawberry_shortcake:'Çilekli pasta',tiramisu:'Tiramisu',waffles:'Waffle',
+  tuna_tartare:'Ton balığı',sashimi:'Sashimi',pad_thai:'Pad Thai',ramen:'Ramen',
+  paella:'Paella',fried_shrimp:'Karides',filet_mignon:'Dana bonfile',frozen_yogurt:'Dondurulmuş yoğurt'
+};
+function aiMessage(message, isError=false) {
+  const el=document.getElementById('aiStatus');
+  el.textContent=message; el.classList.toggle('error',isError);
+}
+function aiClearResult() {
+  aiItems=[]; aiPredictions=[]; aiAnalysisDay='';
+  const result=document.getElementById('aiResult'); result.replaceChildren(); result.hidden=true;
+}
+function aiSyncDate() { document.getElementById('aiDateLabel').value=dateText(currentDate);aiClearResult(); }
+function aiInit(){
+  const select=document.getElementById('aiMealSelect');
+  MEALS.forEach(m=>{const opt=document.createElement('option');opt.value=m.key;opt.textContent=m.icon+' '+m.title;select.appendChild(opt)});
+  // Eski ücretli sürümün bağlantı bilgilerinin bu cihazda kalmaması için sil.
+  try {localStorage.removeItem('diet-ai-endpoint');localStorage.removeItem('diet-ai-access-code')}catch(e){}
+  document.getElementById('aiCamera').addEventListener('change',e=>{const f=e.target.files?.[0];e.target.value='';aiLoadPhoto(f)});
+  document.getElementById('aiGallery').addEventListener('change',e=>{const f=e.target.files?.[0];e.target.value='';aiLoadPhoto(f)});
+  document.getElementById('aiAnalyzeButton').addEventListener('click',aiAnalyze);
+  document.getElementById('aiManualAdd').addEventListener('click',aiAddManual);
+  aiSyncDate();
+}
+function aiCompressImage(file){
+  return new Promise((resolve,reject)=>{
+    const url=URL.createObjectURL(file);const img=new Image();
+    img.onload=()=>{URL.revokeObjectURL(url);try{
+      const scale=Math.min(1,1200/Math.max(img.naturalWidth,img.naturalHeight));
+      const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+      const ctx=canvas.getContext('2d');if(!ctx)throw Error('Fotoğraf işlenemedi.');
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL('image/jpeg',.8));
+    }catch(err){reject(err)}};
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(Error('Görsel açılamadı. JPG veya PNG dene.'))};img.src=url;
+  });
+}
+async function aiLoadPhoto(file){
+  if(!file)return;
+  if(aiIsBusy){aiMessage('Analiz devam ederken fotoğraf değiştirme.',true);return}
+  aiClearResult();aiImageData='';document.getElementById('aiPreview').hidden=true;
+  try{
+    if(!file.type.startsWith('image/'))throw Error('Bir görsel seç.');
+    if(file.size>aiMaxImageBytes)throw Error('Fotoğraf 15 MB sınırını aşıyor.');
+    aiMessage('Fotoğraf hazırlanıyor…');
+    aiImageData=await aiCompressImage(file);
+    const preview=document.getElementById('aiPreview');preview.src=aiImageData;preview.hidden=false;
+    aiMessage('Fotoğraf hazır. Ücretsiz analiz için düğmeye dokun.');
+  }catch(err){aiMessage(err.message||'Fotoğraf yüklenemedi.',true)}
+}
+function aiFriendlyFood(label){
+  const raw=String(label||'').toLowerCase().trim().replace(/[- ]/g,'_');
+  return AI_FOOD_NAMES[raw]||raw.replace(/_/g,' ').replace(/^./,x=>x.toUpperCase());
+}
+function aiMakeItem(name,grams){
+  const g=Math.max(0,Math.round(Number(grams)||0));const matched=foodMatch(name);
+  const kcal=matched&&g>0?calcFoodKcal(matched.name,g):0;
+  return {name:String(matched?.name||name).slice(0,90),grams:g,kcal:kcal??0,selected:true,
+    fromLibrary:!!matched,sourceKcal:matched?Number(matched.kcal):null};
+}
+function aiUsePrediction(name){
+  aiAnalysisDay=keyDate(currentDate);
+  // Birden fazla tahmin, birden fazla yiyecek demek değildir.
+  aiItems.push(aiMakeItem(name,0));
+  aiRenderResult();
+  aiMessage('Yemek seçildi. Gramı gir, kaloriyi kontrol et, ardından öğüne ekle.');
+  document.querySelector('.ai-result-row:last-of-type input[data-field="grams"]')?.focus();
+}
+function aiAddManual(){
+  const input=document.getElementById('aiManualFood');
+  const gramsEl=document.getElementById('aiManualGrams');
+  const name=input.value.trim();const grams=Number(gramsEl.value);
+  if(!name){aiMessage('Eklemek için besin adını gir.',true);input.focus();return}
+  if(!Number.isFinite(grams)||grams<=0){aiMessage('Miktarı gram olarak gir.',true);gramsEl.focus();return}
+  if(aiAnalysisDay&&aiAnalysisDay!==keyDate(currentDate))aiClearResult();
+  aiAnalysisDay=keyDate(currentDate);
+  aiItems.push(aiMakeItem(name,grams));
+  input.value='';gramsEl.value='';
+  aiRenderResult();
+  const last=aiItems.at(-1);
+  aiMessage(last.fromLibrary?'Besin kütüphanesinden kalori hesaplandı. Kontrol edip öğüne ekle.':'Bu besin kütüphanesinde yok; kalori değerini elle gir.',!last.fromLibrary);
+}
+async function aiLoadModel(){
+  if(!aiModelPromise){
+    aiModelPromise=(async()=>{
+      // Sadece ücretsiz yerel inference: hiçbir resim uzak API'ye POST edilmez.
+      const {pipeline}=await import(AI_JS_CDN);
+      return pipeline('image-classification',AI_LOCAL_MODEL,{
+        dtype:'q8',device:'wasm',
+        progress_callback:(p)=>{
+          if(p.status==='progress'&&p.total>0){const n=Math.round(p.loaded/p.total*100);aiMessage('Ücretsiz model indiriliyor… %'+Math.min(100,n))}
+          else if(p.status==='initiate')aiMessage('Model dosyaları hazırlanıyor…');
+        }
+      });
+    })().catch(e=>{aiModelPromise=null;throw e});
+  }
+  return aiModelPromise;
+}
+async function aiAnalyze(){
+  if(aiIsBusy)return;
+  if(!aiImageData){aiMessage('Önce bir fotoğraf seç.',true);return}
+  aiIsBusy=true;const requestedDay=keyDate(currentDate);
+  const btn=document.getElementById('aiAnalyzeButton');btn.disabled=true;btn.textContent='⏳ Telefonda analiz ediliyor…';
+  aiClearResult();aiMessage('Model ilk kullanımda (~93 MB) indirilebilir. Fotoğrafın cihazında kalır.');
+  try{
+    const classifier=await aiLoadModel();
+    aiMessage('Fotoğraf telefonunda inceleniyor…');
+    const result=await classifier(aiImageData,{top_k:3});
+    if(requestedDay!==keyDate(currentDate))throw Error('Analiz sırasında tarih değişti. Tekrar dene.');
+    if(!Array.isArray(result)||!result.length)throw Error('Model bir yemek öneremedi. Elle ekleyebilirsin.');
+    aiPredictions=result.map(x=>({name:aiFriendlyFood(x.label),score:Math.max(0,Number(x.score)||0)}));
+    aiAnalysisDay=requestedDay;
+    aiRenderResult();
+    aiMessage('Tahminler hazır. Doğru yemeği seç; porsiyon ve kaloriyi sen onayla.');
+  }catch(err){
+    console.warn('Yerel fotoğraf analizi:',err);
+    aiMessage('Ücretsiz model başlatılamadı ('+(err?.message||'ağ/cihaz hatası')+'). İnternet bağlantını veya Safari sürümünü kontrol et; besini yine elle ekleyebilirsin.',true);
+  }finally{btn.disabled=false;btn.textContent='✨ Ücretsiz fotoğraf analizi';aiIsBusy=false}
+}
+function aiRenderResult(){
+  const box=document.getElementById('aiResult');box.replaceChildren();box.hidden=false;
+  const title=document.createElement('h3');title.textContent='🍽️ Öğün taslağı';box.append(title);
+  if(aiPredictions.length){
+    const suggestions=document.createElement('section');suggestions.className='ai-candidates';
+    const heading=document.createElement('div');heading.className='ai-candidates-title';heading.textContent='Modelin olası yemek önerileri (alternatifler):';suggestions.append(heading);
+    aiPredictions.forEach(p=>{const b=document.createElement('button');b.type='button';b.className='ai-candidate';
+      const name=document.createElement('span');name.textContent=p.name;const score=document.createElement('small');score.textContent='eşleşme '+Math.round(p.score*100)+'%';
+      b.append(name,score);b.onclick=()=>aiUsePrediction(p.name);suggestions.append(b)});
+    const hint=document.createElement('p');hint.className='ai-result-desc';hint.textContent='Bunlar aynı fotoğraf için alternatif sınıflardır; farklı tabaklar değildir. Fotoğrafta birden fazla yemek varsa diğerlerini aşağıdaki manuel alandan ekle.';suggestions.append(hint);box.append(suggestions);
+  }
+  if(!aiItems.length){const note=document.createElement('p');note.className='ai-result-desc';note.textContent='Yukarıdan bir yemek seç veya besini manuel ekle. Önce porsiyonu belirtmelisin.';box.append(note);return}
+  aiItems.forEach((item,index)=>{
+    const row=document.createElement('div');row.className='ai-result-row';
+    const top=document.createElement('label');top.className='ai-result-head';
+    const check=document.createElement('input');check.type='checkbox';check.checked=item.selected;
+    check.onchange=()=>{item.selected=check.checked;aiUpdateTotal()};
+    const t=document.createElement('b');t.textContent='Besin '+(index+1);top.append(check,t);row.append(top);
+    const grid=document.createElement('div');grid.className='ai-result-fields';
+    [{key:'name',label:'Besin adı',type:'text'},{key:'grams',label:'Gram (g)',type:'number'},{key:'kcal',label:'Kalori (kcal)',type:'number'}].forEach(cfg=>{
+      const label=document.createElement('label');label.textContent=cfg.label;
+      const input=document.createElement('input');input.type=cfg.type;input.value=item[cfg.key];input.dataset.field=cfg.key;
+      if(cfg.key==='name')input.setAttribute('list','foodList');
+      if(cfg.type==='number'){input.min='0';input.step='1';input.inputMode='numeric'}
+      input.oninput=()=>{
+        if(cfg.key==='name'){
+          item.name=input.value;const matched=foodMatch(item.name);
+          item.fromLibrary=!!matched;item.sourceKcal=matched?Number(matched.kcal):null;
+          if(matched&&item.grams>0){item.kcal=calcFoodKcal(item.name,item.grams);const kc=grid.querySelector('input[data-field="kcal"]');if(kc)kc.value=item.kcal}
+        }else if(cfg.key==='grams'){
+          const grams=Math.max(0,Number(input.value)||0);const prev=Number(item.grams)||0;item.grams=grams;
+          if(item.sourceKcal!==null){item.kcal=Math.round(item.sourceKcal*grams/100)}
+          else if(prev>0){item.kcal=Math.round(item.kcal*grams/prev)}
+          const kc=grid.querySelector('input[data-field="kcal"]');if(kc)kc.value=item.kcal;
+        }else{item.kcal=Math.max(0,Number(input.value)||0)}
+        aiUpdateTotal();aiUpdateMacros(row,item);
+      };
+      label.append(input);grid.append(label);
+    });row.append(grid);
+    const note=document.createElement('p');note.className='ai-macros';row.append(note);aiUpdateMacros(row,item);box.append(row);
+  });
+  const reminder=document.createElement('p');reminder.className='ai-disclaimer';reminder.textContent='Fotoğraf gramı ve besin değerlerini ölçmez. Kütüphanede olmayan yemeklerde kaloriyi kendin gir; makro hesaplaması yapılmaz.';box.append(reminder);
+  const total=document.createElement('div');total.className='ai-result-total';total.innerHTML='<span>Seçilen besinlerin toplamı</span><strong id="aiTotal">0 kcal</strong>';box.append(total);
+  const add=document.createElement('button');add.type='button';add.className='ai-add';add.textContent='✓ Seçilenleri öğüne ekle';add.onclick=aiAddToMeal;box.append(add);aiUpdateTotal();
+}
+function aiUpdateMacros(row,item){
+  row.querySelector('.ai-macros').textContent=item.sourceKcal!==null
+    ? 'Besin kütüphanesi: '+item.sourceKcal+' kcal / 100 g · Makrolar hesaplanmıyor'
+    : 'Kaloriyi kontrol et veya elle gir · Makrolar hesaplanmıyor';
+}
+function aiUpdateTotal(){
+  const total=document.getElementById('aiTotal');
+  if(total)total.textContent=aiItems.filter(i=>i.selected).reduce((s,i)=>s+(Number(i.kcal)||0),0)+' kcal';
+}
+function aiAddToMeal(){
+  if(aiAnalysisDay!==keyDate(currentDate)){aiMessage('Gün değişmiş; tekrar seç.',true);return}
+  const key=document.getElementById('aiMealSelect').value;
+  const chosen=aiItems.filter(i=>i.selected&&i.name.trim());
+  if(!chosen.length){aiMessage('Öğüne eklenecek besin seç.',true);return}
+  if(chosen.some(i=>!Number.isFinite(Number(i.grams))||Number(i.grams)<=0)){
+    aiMessage('Öğüne eklemeden önce her besinin gram miktarını gir.',true);return}
+  if(chosen.some(i=>!Number.isFinite(Number(i.kcal))||Number(i.kcal)<0||(Number(i.kcal)===0&&i.sourceKcal!==0))){
+    aiMessage('Kalorisi bilinmeyen besinlerde kcal değerini elle gir.',true);return}
+  const items=data.meals[key]?.items;
+  if(!items){aiMessage('Geçersiz öğün.',true);return}
+  chosen.forEach(i=>{
+    const entry={name:i.name.trim().slice(0,90),grams:String(Math.round(Number(i.grams))),kcal:String(Math.round(Number(i.kcal)))};
+    const blank=items.find(x=>!String(x.name||'').trim()&&!String(x.grams||'').trim()&&!String(x.kcal||'').trim());
+    if(blank)Object.assign(blank,entry);else items.push(entry);
+  });
+  renderItems(key);updateSummary();save();
+  aiMessage(chosen.length+' besin öğüne eklendi.');aiClearResult();
+  document.querySelector('.tab-btn[data-tab="meals"]')?.click();
+  requestAnimationFrame(()=>document.getElementById('card-'+key)?.scrollIntoView({behavior:'smooth',block:'start'}));
+}
+
+// Başlangıç: tüm AI değişkenleri tanımlandıktan sonra çalıştır.
+renderFoodDatalist();buildMeals();aiInit();loadDay(currentDate);
+</script><script>
+(function(){
+  const pages=["today","meals","ai","activity"];
+  function navigate(name,changeHash=true){
+    if(!pages.includes(name))name="today";
+    pages.forEach(page=>{
+      const panel=document.getElementById("screen-"+page);
+      const active=page===name;
+      panel.classList.toggle("active",active);panel.hidden=!active;
+      const tab=document.querySelector('.tab-btn[data-tab="'+page+'"]');
+      tab.classList.toggle("active",active);
+      if(active)tab.setAttribute("aria-current","page");else tab.removeAttribute("aria-current");
+    });
+    if(changeHash)history.replaceState(null,"",location.pathname+location.search+"#"+name);
+    window.scrollTo({top:0,behavior:"instant"});
+  }
+  document.querySelectorAll(".tab-btn").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.tab)));
+  document.getElementById("goAiQuick").addEventListener("click",()=>navigate("ai"));
+  document.getElementById("goAiMeals").addEventListener("click",()=>navigate("ai"));
+  window.addEventListener("hashchange",()=>navigate(location.hash.slice(1),false));
+  navigate(location.hash.slice(1),false);
+  if(typeof updateDashboard==="function")updateDashboard();
+})();
+</script></body></html>
